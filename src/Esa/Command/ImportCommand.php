@@ -74,10 +74,6 @@ class ImportCommand extends Command
 		$output->write('Using url: ' . $url);
 
 		$it = new SessionExportIterator(new Stream($url));
-
-		$this->db->query('DELETE FROM session_data');
-		$this->db->query('DELETE FROM presentation_data');
-
 		$qb = $this->db->createQueryBuilder();
 
 		foreach($it as $data)
@@ -94,6 +90,7 @@ class ImportCommand extends Command
 					)
 				', [$sessionId, $sessionId]);
 
+			$this->db->delete('session_data', ['session_id' => $sessionId]);
 			$presentations = [];
 			foreach($data as $key => $val)
 			{
@@ -134,6 +131,8 @@ class ImportCommand extends Command
 			foreach($presentations as $presentationData)
 			{
 				$presentationId = $presentationData['paperID'];
+				$this->db->delete('presentation_data', ['presentation_id' => $presentationId]);
+
 				foreach($presentationData as $key => $val)
 				{
 					if (empty($val)) continue;

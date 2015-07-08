@@ -16,6 +16,7 @@ if (!activeDate) {
 
 export default (
     <Route component={App}>
+        <Redirect from="/" to={`/sessions/${activeDate}`} />
         <Redirect from="/sessions" to={`/sessions/${activeDate}`} />
         <Route path="/sessions/:activeDate" component={Sessions}/>
         <Route path="/presentation/:id" component={Presentation}/>
