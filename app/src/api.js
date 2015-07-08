@@ -1,5 +1,7 @@
 import superagent from 'superagent';
 import Promise from './Promise.js';
+import { appUrl } from './config.js';
+
 
 function promise(req) {
     return new Promise((resolve, reject) => {
@@ -18,13 +20,13 @@ function promise(req) {
 }
 
 export function listTypes() {
-    return promise(superagent.get('http://127.0.0.1:8080/api/types'));
+    return promise(superagent.get(appUrl + '/api/types'));
 }
 
 export function listSessions(params) {
-    return promise(superagent.get('http://127.0.0.1:8080/api/sessions').query(params || {}));
+    return promise(superagent.get(appUrl + '/api/sessions').query(params || {}));
 }
 
 export function getPresentation(id) {
-    return promise(superagent.get('http://127.0.0.1:8080/api/presentations/' + id));
+    return promise(superagent.get(appUrl +'/api/presentations/' + id));
 }
