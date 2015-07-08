@@ -1,0 +1,8 @@
+node_modules/*
+app/build/*
+vendor/*
+data/*.db
+composer.lock
+!.gitkeep
+npm-debug.log
+.idea
