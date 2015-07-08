@@ -8,7 +8,7 @@ module.exports = {
     plugins: [
         new webpack.NoErrorsPlugin(),
         new webpack.DefinePlugin({
-            'process.env': ['NODE_ENV', 'DATABASE_URL'].reduce(function(o, k) {
+            'process.env': ['NODE_ENV', 'DATABASE_URL', 'PORT'].reduce(function(o, k) {
                 o[k] = JSON.stringify(process.env[k]);
                 return o;
             }, {})
