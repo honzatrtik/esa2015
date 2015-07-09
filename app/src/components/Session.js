@@ -13,21 +13,18 @@ export default class Session extends React.Component {
 
     renderPresentation(presentation) {
         return (
-            <tr key={presentation.id}>
-                <td>
-                    <h5 key="title">
+            <div key={presentation.id} className="presentation">
+                <Link className="presentation-link" to={`/presentation/${presentation.id}`}>
+                    <h4 key="title" className="presentation-title">
                         {presentation.title}
-                    </h5>
+                    </h4>
                     <p key="description">
-                        <span key="type">{presentation.type}</span><br />
-                        <em key="authors">{presentation.authors}</em><br />
-                        <em key="organisations" className="text-muted">{presentation.organisations}</em>
+                        <span className="tex-muted" key="type">{presentation.type}</span><br />
+                        <span key="authors">{presentation.authors}</span><br />
+                        <em key="organisations">{presentation.organisations}</em>
                     </p>
-                </td>
-                <td style={{width: 140}}>
-                    <Link to={`/presentation/${presentation.id}`}>view abstract</Link>
-                </td>
-            </tr>
+                </Link>
+            </div>
         );
     }
 
@@ -38,17 +35,17 @@ export default class Session extends React.Component {
                 <div key="header" className="row session-header">
                     <div key="time" className="col-md-1">
                         <h4>{moment(session.start).format('HH:mm')}</h4>
-                        <h5>{session.room}</h5>
                     </div>
-                    <div key="title" className="col-md-11">
+                    <div key="room" className="col-md-1">
+                        <h4>{session.room || 'room'}</h4>
+                    </div>
+                    <div key="title" className="col-md-10">
                         <h4>{session.title}</h4>
                     </div>
                 </div>
-                <div key="presentations" className="row">
-                    <div className="col-md-11  col-md-offset-1">
-                        <table className="table table-hover">
-                            {session.presentations.map(this.renderPresentation)}
-                        </table>
+                <div key="presentations" className="presentations row">
+                    <div className="col-md-10  col-md-offset-2">
+                        {session.presentations.map(this.renderPresentation)}
                     </div>
                 </div>
             </div>

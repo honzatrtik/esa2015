@@ -10,8 +10,11 @@ import { stringify } from './src/utils.js';
 import createRedux from './src/createRedux.js';
 import { Provider } from 'redux/lib/react';
 import DocumentTitle from 'react-document-title';
+import state from 'express-state';
 
 let app = express();
+
+state.extend(app);
 
 app.use('/api', api);
 
@@ -26,7 +29,7 @@ function handleError(res, status, error) {
     }
 }
 
-function renderPage(html, data) {
+function renderPage(html, state) {
     return `
 <!doctype html>
 <html>
@@ -40,7 +43,7 @@ function renderPage(html, data) {
   <body>
     <div id="app">${html}</div>
     <script>
-      __INITIAL_DATA__ = ${stringify(data)};
+      ${state}
     </script>
     <script src="/build/client.js"></script>
   </body>
@@ -74,7 +77,8 @@ app.get('*', (req, res) => {
                     {() => <Router {...initialState} />}
                 </Provider>
             );
-            return res.send(renderPage(html, redux.getState()));
+            res.expose(redux.getState(), '__INITIAL_DATA__');
+            return res.send(renderPage(html, res.locals.state.toString()));
         }).catch(error => {
             handleError(res, 500, error);
         });

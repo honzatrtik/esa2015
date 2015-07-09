@@ -29,6 +29,7 @@
     "es6-shim": "^0.27.1",
     "express": "^4.13.0",
     "express-handlebars": "^1.1.0",
+    "express-state": "^1.2.0",
     "immutable": "^3.7.4",
     "invariant": "^2.1.0",
     "less": "^2.5.1",
@@ -43,7 +44,6 @@
     "redux": "^0.12.0",
     "squel": "^4.0.0",
     "superagent": "^0.21.0",
-    "transit-js": "^0.8.759",
     "webpack": "^1.9.11"
   },
   "devDependencies": {

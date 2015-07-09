@@ -1,7 +1,7 @@
 #header {
 	text-align: center;
 	color: #fff;
-	background: url('http://esa12thconference.eu/sites/esa12thconference.eu/files/esa_foto_web2_550_bw_0.jpg');
+	background: url('http://esa12thconference.eu/sites/esa12thconference.eu/files/esa_foto_web2_550_bw_0.jpg') no-repeat 50% 25% #e47e3d;
 	margin: 0;
 	padding: 0;
 	h1 {
@@ -16,14 +16,41 @@ h5 {
 	font-weight: bold;
 }
 
+
 body {
 	font-family: 'Roboto',sans,arial;
+}
+
+.presentations {
+	margin-top: 1em;
+	margin-bottom: 2em;
+}
+
+.presentation {
+	color: @gray-dark;
+	border-top: 1px solid @gray-lighter;
+	&:first-child {
+		border-top: none;
+	}
+	.presentation-link {
+		display: block;
+		text-decoration: none;
+		color: @gray-dark;
+		&:hover {
+			.presentation-link-title {
+			}
+		}
+	}
+}
+
+.presentation-title {
+	color: @gray-darker;
 }
 
 .session {
 	.session-header {
 		color: #e47e3d;
-		border-top: 1px solid #e47e3d;
+		border-bottom: 1px solid #e47e3d;
 		margin-bottom: 1em;
 
 		h4 {
