@@ -31,7 +31,9 @@ moment.locale('en');
             types: state.types
         }
     },
-    (state, props) => (props.location.query && props.location.query.type) == (state.sessions.params && state.sessions.params.type)
+    (state, props) => state.types
+        && state.sessions
+        && ((props.location.query && props.location.query.type) == (state.sessions.params && state.sessions.params.type))
 )
 export default class Sessions extends React.Component {
 
