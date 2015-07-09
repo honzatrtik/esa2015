@@ -10,7 +10,7 @@ export default class TypeFilter extends React.Component {
 
     static propTypes = {
         types: React.PropTypes.array.isRequired,
-        activeType: React.PropTypes.string.isRequired,
+        activeType: React.PropTypes.string,
         query: React.PropTypes.object,
         pathname: React.PropTypes.string.isRequired
     };

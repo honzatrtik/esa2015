@@ -37,6 +37,10 @@ export default function loader(getPromise, select, stateReady) {
                     loading: true
                 });
                 getPromise(dispatch, props, getState).then(() => {
+
+                    if (!this.isStateReady(props)) {
+                        throw new Error('State not ready even after loading!');
+                    }
                     this.setState({
                         loading: false
                     });

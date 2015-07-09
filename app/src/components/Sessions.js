@@ -11,7 +11,7 @@ import { getRandomInt }  from '../utils.js';
 import DocumentTitle from 'react-document-title';
 import Session from './Session.js';
 import Promise from '../Promise.js';
-
+import shallowEqual from 'react/lib/shallowEqual.js';
 import moment from 'moment';
 moment.locale('en');
 
@@ -19,9 +19,7 @@ moment.locale('en');
     (dispatch, props, getState) => {
         let promises = [];
         const state = getState();
-        if (!state.sessions) {
-            promises.push(listSessionsAction(dispatch)(props.params));
-        }
+        promises.push(listSessionsAction(dispatch)({ type: props.location.query && props.location.query.type }));
         if (!state.types) {
             promises.push(listTypesAction(dispatch)());
         }
@@ -29,11 +27,11 @@ moment.locale('en');
     },
     (state, props) => {
         return {
-            sessions: state.sessions[props.params.activeDate],
+            sessions: state.sessions.sessions[props.params.activeDate],
             types: state.types
         }
     },
-    (state, props) => false
+    (state, props) => (props.location.query && props.location.query.type) == (state.sessions.params && state.sessions.params.type)
 )
 export default class Sessions extends React.Component {
 
@@ -50,8 +48,7 @@ export default class Sessions extends React.Component {
         const dates = config.dates;
         const { activeDate, location, sessions, types, params, loading } = this.props;
 
-        console.log('rendering');
-        const result = (
+        return (
             <DocumentTitle title={["Programme - ", moment(activeDate).format('ddd D. M.'), " | ESA 2015 Prague"].join('  ')}>
                 <div>
                     <div key="filter" className="filters row">
@@ -71,7 +68,5 @@ export default class Sessions extends React.Component {
                 </div>
             </DocumentTitle>
         );
-        console.log('rendering done');
-        return result;
     }
 }
