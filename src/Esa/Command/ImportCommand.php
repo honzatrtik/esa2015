@@ -118,14 +118,18 @@ class ImportCommand extends Command
 
 			foreach(array_column($presentations, 'paperID') as $presentationId)
 			{
-				$this->db->executeQuery('
-					INSERT INTO presentation (id, session_id)
-					SELECT ?, ?
-					WHERE
-						NOT EXISTS (
-							SELECT id FROM presentation WHERE id = ? AND session_id = ?
-						)
-					', [$presentationId, $sessionId, $presentationId, $sessionId]);
+				$presentationSessionId = $this->db->fetchColumn('SELECT session_id FROM presentation WHERE id = ?', [$presentationId]);
+				if ($presentationSessionId)
+				{
+					if ($presentationSessionId != $sessionId)
+					{
+						$this->db->update('presentation', ['session_id' => $sessionId], ['id' => $presentationId]);
+					}
+				}
+				else
+				{
+					$this->db->insert('presentation', ['id' => $presentationId, 'session_id' => $sessionId]);
+				}
 			}
 
 			foreach($presentations as $presentationData)
