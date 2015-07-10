@@ -1,7 +1,7 @@
-node_modules
-app/build/*
-vendor/*
-data/*.db
+/node_modules
+/app/build/*
+/vendor
+/data/*.db
 !.gitkeep
 npm-debug.log
 .idea
