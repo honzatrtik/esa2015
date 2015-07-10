@@ -41,10 +41,9 @@ export default class Presentations extends React.Component {
             <DocumentTitle title={[presentation.title,  "| ESA 2015 Prague"].join('  ')}>
                 <div className="presentation">
                     <h2 className="presentation-title" key="title">
-                        {presentation.title}
+                        <span className="text-muted">{presentation.type}</span> {presentation.title}
                     </h2>
                     <p key="description">
-                        <span className="tex-muted" key="type">{presentation.type}</span><br />
                         <span key="authors">{presentation.authors}</span><br />
                         <em key="organisations">{presentation.organisations}</em>
                     </p>

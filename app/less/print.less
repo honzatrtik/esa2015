@@ -1,0 +1,32 @@
+@media print
+{
+
+	a,
+	a:visited
+	{
+		text-decoration: none;
+	}
+
+	a[href]:after
+	{
+		content: "";
+	}
+
+	abbr[title]:after
+	{
+		content: "";
+	}
+
+	// Don't show links that are fragment identifiers,
+	// or use the `javascript:` pseudo protocol
+	a[href^="#"]:after,
+	a[href^="javascript:"]:after
+	{
+		content: "";
+	}
+
+	.session {
+		page-break-inside: avoid;
+	}
+
+}

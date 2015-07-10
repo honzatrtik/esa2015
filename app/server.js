@@ -11,6 +11,8 @@ import createRedux from './src/createRedux.js';
 import { Provider } from 'redux/lib/react';
 import DocumentTitle from 'react-document-title';
 import state from 'express-state';
+import { appUrl } from './src/config.js';
+import fs from 'fs';
 
 let app = express();
 
@@ -29,7 +31,7 @@ function handleError(res, status, error) {
     }
 }
 
-function renderPage(html, state) {
+function renderPage(html, title, state) {
     return `
 <!doctype html>
 <html>
@@ -37,8 +39,9 @@ function renderPage(html, state) {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="/build/styles.css" rel="stylesheet" />
-    <title>${DocumentTitle.rewind()}</title>
+    <title>${title}</title>
+    <link href="${appUrl}/build/styles.css" rel="stylesheet" />
+    <link href="${appUrl}/build/print.css" rel="stylesheet" media="print"/>
   </head>
   <body>
     <div id="app">${html}</div>
@@ -51,40 +54,104 @@ function renderPage(html, state) {
 `
 }
 
-app.get('*', (req, res) => {
-    let location = new Location(req.path, req.query);
+function getHtml(req, res) {
+    return new Promise((resolve, reject) => {
 
-    let redux = createRedux();
+        const location = new Location(req.path, req.query);
+        const redux = createRedux();
 
-    Router.run(routes, location, (error, initialState, transition) => {
+        Router.run(routes, location, (error, initialState, transition) => {
 
-        if (transition.redirectInfo) {
-            const { pathname, query } = transition.redirectInfo;
-            return res.redirect(pathname + '?' + require('qs').stringify(query));
-        }
+            if (transition.redirectInfo) {
+                const { pathname, query } = transition.redirectInfo;
+                return resolve({
+                    redirect: pathname + '?' + require('qs').stringify(query)
+                });
+            }
 
-        if (!initialState || !initialState.components) {
-            return handleError(res, 404);
-        }
-        if (error) {
-            return handleError(res, 500, error);
-        }
+            if (!initialState || !initialState.components) {
+                return reject({
+                    status: 404
+                });
+            }
+            if (error) {
+                return reject({
+                    status: 500,
+                    error
+                });
+            }
 
-        const promises = initialState.components.filter(component => component.getPromise).map(component => Promise.resolve(component.getPromise(redux.dispatch.bind(redux), initialState, redux.getState.bind(redux))));
-        Promise.all(promises).then(() => {
-            let html = React.renderToString(
-                <Provider redux={redux}>
-                    {() => <Router {...initialState} />}
-                </Provider>
-            );
-            res.expose(redux.getState(), '__INITIAL_DATA__');
-            return res.send(renderPage(html, res.locals.state.toString()));
-        }).catch(error => {
-            handleError(res, 500, error);
+            const promises = initialState.components.filter(component => component.getPromise).map(component => Promise.resolve(component.getPromise(redux.dispatch.bind(redux), initialState, redux.getState.bind(redux))));
+            Promise.all(promises).then(() => {
+                const html = React.renderToString(
+                    <Provider redux={redux}>
+                        {() => <Router {...initialState} />}
+                    </Provider>
+                );
+
+                return resolve({
+                    title: DocumentTitle.rewind(),
+                    html,
+                    state: redux.getState()
+                });
+
+            }).catch(error => {
+                return reject({
+                    status: 500,
+                    error
+                });
+            });
+
         });
+    });
+}
 
+app.get('/pdf', (req, res) => {
+    const file = __dirname + '/build/esa12th-prague-programme.pdf';
+    fs.exists(file, function (exists) {
+        if (exists) {
+            return res.sendFile(file);
+        } else {
+
+            getHtml(req, res).then(data => {
+                const { html, title } = data;
+
+                const pdf = require('html-pdf');
+                const options = {
+                    timeout: 90000,
+                    format: 'A4'
+                };
+
+                pdf.create(renderPage(html, title), options).toStream(function(err, stream){
+                    if (err) throw err;
+                    stream.pipe(fs.createWriteStream(file));
+                    stream.on('end', () => {
+                        return res.sendFile(file);
+                    });
+                });
+
+            }).catch(data => {
+                handleError(res, data.status, data.error);
+            });
+        }
+    });
+
+});
+
+app.get('*', (req, res) => {
+    getHtml(req, res).then(data => {
+        const { html, title, state, redirect } = data;
+        if (redirect) {
+            return res.redirect(redirect);
+        }
+        res.expose(state, '__INITIAL_DATA__');
+        return res.send(renderPage(html, title, res.locals.state.toString()));
+    }).catch(data => {
+        handleError(res, data.status, data.error);
     });
 });
+
+
 
 
 
