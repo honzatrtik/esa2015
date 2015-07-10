@@ -4,6 +4,7 @@ import squel from 'squel';
 import apicache from 'apicache';
 import { dbUrl } from './config.js';
 import cors from 'cors';
+import Promise from './Promise.js';
 
 const squelPg = squel.useFlavour('postgres');
 squelPg.cls.DefaultQueryBuilderOptions.tableAliasQuoteCharacter = '"';
@@ -22,7 +23,6 @@ function query() {
                 reject(err);
             } else {
                 args.push((err, result) => {
-                    done();
                     if (err) {
                         reject(err);
                     } else {
@@ -30,6 +30,7 @@ function query() {
                     }
                 });
                 client.query.apply(client, args);
+                done();
             }
         });
     });
@@ -97,7 +98,23 @@ app.get('/presentations/:id', cache('5 minutes'), (req, res) => {
         .where('p.id = ?', req.params.id);
     const sql = builder.toString();
     query(sql).then(result => {
-        res.json(result.rows[0]);
+
+        let presentation = result.rows[0];
+        if (presentation) {
+            const sql = squelPg.select()
+                .from('v_session', 's')
+                .field('*')
+                .where('s.id = ?', presentation['session_id'])
+                .toString();
+
+            query(sql).then(result => {
+                presentation.session = result.rows[0];
+                return res.json(presentation);
+            });
+        } else {
+            return res.json(presentation);
+        }
+
     });
 });
 

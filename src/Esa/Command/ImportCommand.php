@@ -30,7 +30,8 @@ class ImportCommand extends Command
 	static protected $indexedPresentationKeys = [
 		'paper_ID',
 		'contribution_type',
-		'authors'
+		'authors',
+		'acceptance'
 	];
 
 	/** @var  Connection  */
@@ -92,6 +93,15 @@ class ImportCommand extends Command
 
 			$this->db->delete('session_data', ['session_id' => $sessionId]);
 			$presentations = [];
+
+			// Vyradime vsechny session, jejiz kod konci na 'X'
+			if (!empty($data['session_short']) && strtoupper(substr($data['session_short'], -1)) === 'X')
+			{
+				$this->db->delete('session', ['id' => $sessionId]);
+				$this->db->commit();
+				continue;
+			}
+
 			foreach($data as $key => $val)
 			{
 				if (empty($val)) continue;

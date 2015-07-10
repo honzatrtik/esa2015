@@ -36,13 +36,49 @@ export default class Presentations extends React.Component {
 
     render() {
         const { presentation } =  this.props;
+        const { session } = presentation;
+        const start = moment(session.start).format('HH:mm');
+        const end = moment(session.end).format('HH:mm');
+
+        const date = moment(session.start).format('ddd D. M.');
 
         return (
             <DocumentTitle title={[presentation.title,  "| ESA 2015 Prague"].join('  ')}>
                 <div className="presentation">
-                    <h2 className="presentation-title" key="title">
-                        <span className="text-muted">{presentation.type}</span> {presentation.title}
-                    </h2>
+
+                    <div key="header" className="presentation-header">
+
+                        <div className="row">
+                            <div key="date-room" className="col-md-12">
+                                <h4>
+                                    {start != '00:00' && date}{'\u00a0\u00a0'}
+                                    {start == '00:00' ? <abbr title="To be announced">tba</abbr> : [start, end].join('\u00a0-\u00a0')}<br />
+                                    {session.room && ['room', session.room].join(' ')}
+                                </h4>
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div key="title" className="col-md-10">
+                                <h3>{session.title}</h3>
+                            </div>
+                            <div key="short" className="col-md-2">
+                                <h3 className="text-muted">{session.short}</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-md-10">
+                            <h1 className="presentation-title" key="title">
+                                {presentation.title}
+                            </h1>
+                        </div>
+                        <div className="col-md-2">
+                            <h2 className="text-muted">{presentation.type}</h2>
+                        </div>
+                    </div>
+
                     <p key="description">
                         <span key="authors">{presentation.authors}</span><br />
                         <em key="organisations">{presentation.organisations}</em>

@@ -28,12 +28,14 @@ CREATE VIEW v_presentation AS
     coalesce(d3.indexed, d3.val) AS organisations,
     coalesce(d4.indexed, d4.val) AS presenting_author,
     coalesce(d5.indexed, d5.val) AS title,
-    coalesce(d6.indexed, d6.val) AS abstract
+    coalesce(d6.indexed, d6.val) AS abstract,
+    coalesce(d7.indexed, d7.val) AS acceptance
   FROM presentation AS p
     LEFT JOIN presentation_data AS "d1" ON ((p.id = d1.presentation_id) AND (d1.key = 'contribution_type'))
     LEFT JOIN presentation_data AS "d2" ON ((p.id = d2.presentation_id) AND (d2.key = 'authors'))
     LEFT JOIN presentation_data AS "d3" ON ((p.id = d3.presentation_id) AND (d3.key = 'organisations'))
     LEFT JOIN presentation_data AS "d4" ON ((p.id = d4.presentation_id) AND (d4.key = 'presenting_author'))
     LEFT JOIN presentation_data AS "d5" ON ((p.id = d5.presentation_id) AND (d5.key = 'title'))
-    LEFT JOIN presentation_data AS "d6" ON ((p.id = d6.presentation_id) AND (d6.key = 'abstract'));
+    LEFT JOIN presentation_data AS "d6" ON ((p.id = d6.presentation_id) AND (d6.key = 'abstract'))
+    LEFT JOIN presentation_data AS "d7" ON ((p.id = d7.presentation_id) AND (d7.key = 'acceptance'));
 

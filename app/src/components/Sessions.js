@@ -28,7 +28,8 @@ moment.locale('en');
     (state, props) => {
         return {
             sessions: state.sessions.sessions[props.params.activeDate],
-            types: state.types
+            types: state.types,
+            showTba: state.sessions.sessions['tba'] && state.sessions.sessions['tba'].length,
         }
     },
     (state, props) => state.types
@@ -48,14 +49,14 @@ export default class Sessions extends React.Component {
 
     render() {
         const dates = config.dates;
-        const { activeDate, location, sessions, types, params, loading } = this.props;
+        const { activeDate, location, sessions, types, params, loading, showTba } = this.props;
 
         return (
-            <DocumentTitle title={["Programme - ", moment(activeDate).format('ddd D. M.'), " | ESA 2015 Prague"].join('  ')}>
+            <DocumentTitle title={['Programme - ', moment(activeDate).format('ddd D. M.'), ' | ESA 2015 Prague'].join('  ')}>
                 <div>
                     <div key="filter" className="filters row">
                         <div key="dayFilter" className="col-md-8">
-                            <DayFilter {...location} dates={dates} activeDate={params.activeDate}/>
+                            <DayFilter showTba={showTba} {...location} dates={dates} activeDate={params.activeDate}/>
                         </div>
                         <div key="typeFilter" className="col-md-4">
                             <TypeFilter {...location} types={types} activeType={location.query && location.query.type}/>
@@ -66,6 +67,7 @@ export default class Sessions extends React.Component {
                         <div className="row">
                             <div className="col-md-12">
                                 {(sessions || []).map(s => <Session key={s.id} session={s} />)}
+                                {sessions || <div className="text-muted text-center">programme for this day will be announced</div>}
                             </div>
                         </div>
                     </div>
