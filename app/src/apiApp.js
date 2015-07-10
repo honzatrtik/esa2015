@@ -3,6 +3,7 @@ import pg from 'pg';
 import squel from 'squel';
 import apicache from 'apicache';
 import { dbUrl } from './config.js';
+import cors from 'cors';
 
 const squelPg = squel.useFlavour('postgres');
 squelPg.cls.DefaultQueryBuilderOptions.tableAliasQuoteCharacter = '"';
@@ -36,6 +37,7 @@ function query() {
 
 
 let app = express();
+app.use(cors());
 
 app.get('/types', cache('30 minutes'), (req, res) => {
 
