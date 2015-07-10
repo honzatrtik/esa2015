@@ -67,7 +67,7 @@ export default class Sessions extends React.Component {
                         <div className="row">
                             <div className="col-md-12">
                                 {(sessions || []).map(s => <Session key={s.id} session={s} />)}
-                                {sessions || <div className="text-muted text-center">programme for this day will be announced</div>}
+                                {!!sessions || <div className="text-muted text-center">programme for this day will be announced</div>}
                             </div>
                         </div>
                     </div>
