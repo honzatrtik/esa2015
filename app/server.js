@@ -1,6 +1,4 @@
-if (process.env.NODE_ENV === 'production') {
-    require('newrelic');
-}
+import newrelic from 'newrelic';
 import throng from 'throng';
 import React from 'react';
 import Router from 'react-router';
@@ -107,10 +105,14 @@ function start() {
 
     let app = express();
 
+
+    app.use('/build', express.static(__dirname + '/build'));
+    app.use('/api', api);
     state.extend(app);
 
-    app.use('/api', api);
-    app.use('/build', express.static(__dirname + '/build'));
+    app.get('/test', (req, res) => {
+        return res.json('ok');
+    });
 
     app.get('*', (req, res) => {
         getHtml(req, res).then(data => {
@@ -129,7 +131,7 @@ function start() {
     let server = app.listen(process.env.PORT || 8080, () => {
         const host = server.address().address;
         const port = server.address().port;
-        console.log('Example app listening at http://%s:%s', host, port);
+        console.log('App listening at http://%s:%s', host, port);
     });
 }
 
@@ -138,3 +140,5 @@ throng(start, {
     workers: workers,
     lifetime: Infinity
 });
+
+

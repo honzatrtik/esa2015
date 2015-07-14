@@ -35,7 +35,7 @@ moment.locale('en');
     (state, props) => {
         return state.types
             && state.sessionsByDate
-            && ((props.location.query && props.location.query.type) == (state.sessionsByDate.query && state.sessionsByDate.query.type))
+            && ((props.location.query || {}).type == (state.sessionsByDate.query || {}).type)
             && state.sessionsByDate.date === props.params.activeDate
     }
 )

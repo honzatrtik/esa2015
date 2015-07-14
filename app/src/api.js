@@ -3,15 +3,9 @@ import Promise from './Promise.js';
 import { appUrl } from './config.js';
 
 
-let requests = {};
-function promise(req, name) {
-    if (name && requests[name]) {
-        requests[name].abort();
-    }
-    requests[name] = req;
+function promise(req) {
     return new Promise((resolve, reject) => {
         req.end((err, res) => {
-            delete requests[name];
             if (err) {
                 reject(err);
             } else {
@@ -32,7 +26,7 @@ export function listTypes() {
 
 export function listSessionsByDate(date, query) {
     const req = superagent.get(appUrl + '/api/sessionsByDate/' + date).query(query || {});
-    return promise(req, 'listSessionsByDate');
+    return promise(req);
 }
 
 export function getPresentation(id) {

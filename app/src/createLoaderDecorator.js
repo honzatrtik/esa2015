@@ -25,6 +25,7 @@ export default function loader(getPromise, select, stateReady) {
 
             constructor(props) {
                 super(props);
+                this.counter = 0;
                 this.state = {
                     loading: false
                 };
@@ -33,21 +34,26 @@ export default function loader(getPromise, select, stateReady) {
 
             load(props) {
                 const { dispatch, getState } = this.context.redux;
+                this.counter++;
                 this.setState({
                     loading: true
                 });
+
                 getPromise(dispatch, props, getState).then(() => {
-                    if (!this.isStateReady(props)) {
-                        throw new Error('State not ready even after loading!');
+                    this.counter--;
+                    if (!this.counter) {
+                        if (!this.isStateReady(props)) {
+                            throw new Error('State not ready even after loading!');
+                        }
+                        this.setState({
+                            loading: false
+                        });
                     }
-                    this.setState({
-                        loading: false
-                    });
                 });
             }
 
             isStateReady(props) {
-                const { dispatch, getState } = this.context.redux;
+                const { getState } = this.context.redux;
                 return typeof stateReady === 'function' && stateReady(getState(), props)
             }
 
@@ -65,7 +71,6 @@ export default function loader(getPromise, select, stateReady) {
             }
 
             componentWillMount() {
-                debugger;
                 if (!this.isStateReady(this.props)) {
                     this.setState({
                         loading: true
@@ -74,7 +79,6 @@ export default function loader(getPromise, select, stateReady) {
             }
 
             componentDidMount() {
-                debugger;
                 if (!this.isStateReady(this.props)) {
                     this.load(this.props);
                 }
