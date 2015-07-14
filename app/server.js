@@ -1,4 +1,5 @@
 import newrelic from 'newrelic';
+import throng from 'throng';
 import React from 'react';
 import Router from 'react-router';
 import Location from 'react-router/lib/Location';
@@ -12,16 +13,10 @@ import createRedux from './src/createRedux.js';
 import { Provider } from 'redux/lib/react';
 import DocumentTitle from 'react-document-title';
 import state from 'express-state';
-import { appUrl } from './src/config.js';
+import { appUrl, workers } from './src/config.js';
 import fs from 'fs';
 
-let app = express();
 
-state.extend(app);
-
-app.use('/api', api);
-
-app.use('/build', express.static(__dirname + '/build'));
 
 function handleError(res, status, error) {
     const debug = (process.env.NODE_ENV !== 'production');
@@ -34,25 +29,24 @@ function handleError(res, status, error) {
 
 function renderPage(html, title, state) {
     return `
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${title}</title>
-    <link href="${appUrl}/build/styles.css" rel="stylesheet" />
-    <link href="${appUrl}/build/print.css" rel="stylesheet" media="print"/>
-  </head>
-  <body>
-    <div id="app">${html}</div>
-    <script>
-      ${state}
-    </script>
-    <script src="/build/client.js"></script>
-  </body>
-</html>
-`
+        <!doctype html>
+        <html>
+        <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>${title}</title>
+        <link href="${appUrl}/build/styles.css" rel="stylesheet" />
+        <link href="${appUrl}/build/print.css" rel="stylesheet" media="print"/>
+        </head>
+        <body>
+        <div id="app">${html}</div>
+        <script>
+          ${state}
+        </script>
+        <script src="/build/client.js"></script>
+        </body>
+        </html>`;
 }
 
 function getHtml(req, res) {
@@ -107,26 +101,38 @@ function getHtml(req, res) {
     });
 }
 
+function start() {
 
-app.get('*', (req, res) => {
-    getHtml(req, res).then(data => {
-        const { html, title, state, redirect } = data;
-        if (redirect) {
-            return res.redirect(redirect);
-        }
-        res.expose(state, '__INITIAL_DATA__');
-        return res.send(renderPage(html, title, res.locals.state.toString()));
-    }).catch(data => {
-        handleError(res, data.status, data.error);
+    let app = express();
+
+    state.extend(app);
+
+    app.use('/api', api);
+    app.use('/build', express.static(__dirname + '/build'));
+
+    app.get('*', (req, res) => {
+        getHtml(req, res).then(data => {
+            const { html, title, state, redirect } = data;
+            if (redirect) {
+                return res.redirect(redirect);
+            }
+            res.expose(state, '__INITIAL_DATA__');
+            return res.send(renderPage(html, title, res.locals.state.toString()));
+        }).catch(data => {
+            handleError(res, data.status, data.error);
+        });
     });
-});
 
 
+    let server = app.listen(process.env.PORT || 8080, () => {
+        const host = server.address().address;
+        const port = server.address().port;
+        console.log('Example app listening at http://%s:%s', host, port);
+    });
+}
 
 
-
-let server = app.listen(process.env.PORT || 8080, () => {
-    const host = server.address().address;
-    const port = server.address().port;
-    console.log('Example app listening at http://%s:%s', host, port);
+throng(start, {
+    workers: workers,
+    lifetime: Infinity
 });
