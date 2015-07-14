@@ -129,17 +129,10 @@ app.get('/sessionsByDate/:date', cache('10 minutes'), (req, res) => {
         getPresentations(builder => {
             builder.where('session_id IN ?', sessions.map(row => row['id']));
         }).then(presentations => {
-            if (!presentations.length) {
-                return res.json([]);
-            }
-            getSessions(builder => {
-                builder.where('id IN ?', presentations.map(row => row['session_id']));
-            }).then(sessions => {
-                res.json(sessions.map(session => {
-                    session.presentations = presentations.filter(row => row['session_id'] === session['id']);
-                    return session;
-                }));
-            })
+             res.json(sessions.map(session => {
+                session.presentations = presentations.filter(row => row['session_id'] === session['id']);
+                return session;
+            }));
         });
     });
 });
