@@ -75,12 +75,16 @@ class ImportCommand extends Command
 		$output->write('Using url: ' . $url);
 
 		$it = new SessionExportIterator(new Stream($url), 'session');
-		$qb = $this->db->createQueryBuilder();
+
+		$sessionIds = [];
+		$presentationIds = [];
 
 		foreach($it as $data)
 		{
 			$this->db->beginTransaction();
 			$sessionId = $data['session_ID'];
+
+			$sessionIds[] = $sessionId;
 
 			$this->db->executeQuery('
 				INSERT INTO session (id)
@@ -128,6 +132,7 @@ class ImportCommand extends Command
 
 			foreach(array_column($presentations, 'paperID') as $presentationId)
 			{
+				$presentationIds[] = $presentationId;
 				$presentationSessionId = $this->db->fetchColumn('SELECT session_id FROM presentation WHERE id = ?', [$presentationId]);
 				if ($presentationSessionId)
 				{
@@ -164,6 +169,20 @@ class ImportCommand extends Command
 				}
 			}
 			$this->db->commit();
+
 		}
+
+
+		// Clean record, not imported / updated
+		$this->db->executeQuery('DELETE FROM presentations WHERE id NOT IN (?)',
+			[$presentationIds],
+			[\Doctrine\DBAL\Connection::PARAM_INT_ARRAY]
+		);
+
+		$this->db->executeQuery('DELETE FROM session WHERE id NOT IN (?)',
+			[$sessionIds],
+			[\Doctrine\DBAL\Connection::PARAM_INT_ARRAY]
+		);
+
 	}
 }
