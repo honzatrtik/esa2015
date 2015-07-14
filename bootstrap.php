@@ -19,7 +19,6 @@ $app['conftool.createUrl'] = $app->protect(function($export = 'sessions') use ($
 		'form_export_format' => 'xml',	//allowed: xml_short, csv_comma, csv_semicolon, and xls
 		'cmd_create_export' => true,
 		'form_export_sessions_options' => ['presentations', 'presentations_abstracts', 'all'],
-		'form_status' => 1
 	];
 	return $app['conftool.baseUrl'] . '?' . http_build_query($query);
 });
