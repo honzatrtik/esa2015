@@ -2,8 +2,8 @@ import React from 'react';
 import { Link, Navigation } from 'react-router';
 import cs from 'react-classset';
 import moment from 'moment';
-import reactMixin from 'react-mixin';
 moment.locale('en');
+import reactMixin from 'react-mixin';
 
 @reactMixin.decorate(Navigation)
 export default class TypeFilter extends React.Component {
@@ -34,7 +34,7 @@ export default class TypeFilter extends React.Component {
         const { types, query, activeType } = this.props;
         return (
             <div className="form-horizontal row">
-                <label className="control-label col-md-4">RN/RS</label>
+                <label className="control-label col-md-4">RN/RS/other events</label>
                 <div className="col-md-8">
                     <select onChange={this.handleChange} className="form-control" value={activeType || ''}>
                         <option value={''}>all</option>

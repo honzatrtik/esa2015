@@ -28,30 +28,45 @@ body {
 	margin-bottom: 2em;
 }
 
+
+.session .presentation {
+	border-top: 1px solid @gray-lighter;
+}
+
 .presentation {
 	color: @gray-dark;
-	border-top: 1px solid @gray-lighter;
+	white-space: pre-line;
 	&:first-child {
 		border-top: none;
 	}
 	.presentation-link {
 		display: block;
+		padding: 1px;
 		text-decoration: none;
 		color: @gray-dark;
 		&:hover {
+			background-color: @gray-lighter;
+			.transition(background-color .3s);
 			.presentation-link-title {
 			}
 		}
 	}
 }
 
-.presentation.is-contributing-paper {
-	opacity: .8;
-}
-
 .presentation-title {
 	color: @gray-darker;
 }
+
+.presentation.is-contributing-paper .presentation-title {
+	color: @gray-dark;
+}
+
+.presentation.is-contributing-paper .presentation-title:after {
+	content: '(Contributing paper)';
+	font-size: @font-size-small;
+	color: @gray-dark;
+}
+
 .presentation-header {
 	border-bottom: 1px solid @gray-light;
 }

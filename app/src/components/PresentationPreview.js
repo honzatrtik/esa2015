@@ -24,9 +24,10 @@ export default class PresentationPreview extends React.Component {
             'is-contributing-paper': isContributingPaper,
             presentation: true
         });
+
         return (
             <div className={classes}>
-                <Link className="presentation-link" to={`/presentation/${presentation.id}`}>
+                <Link title="Show abstract" className="presentation-link" to={`/presentation/${presentation.id}`}>
                     <h5 key="title" className="presentation-title">
                         <div className="row">
                             <div className="col-md-11">{presentation.title}</div>

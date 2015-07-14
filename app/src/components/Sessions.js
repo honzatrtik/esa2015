@@ -60,10 +60,10 @@ export default class Sessions extends React.Component {
             <DocumentTitle title={['Programme - ', moment(params.activeDate).format('ddd D. M.'), ' | ESA 2015 Prague'].join('  ')}>
                 <div style={{ opacity: loading ? .4 : 1 }}>
                     <div key="filter" className="filters row">
-                        <div key="dayFilter" className="col-md-8">
+                        <div key="dayFilter" className="col-md-6">
                             <DayFilter showTba={showTba} {...location} dates={dates} activeDate={params.activeDate}/>
                         </div>
-                        <div key="typeFilter" className="col-md-4">
+                        <div key="typeFilter" className="col-md-6">
                             <TypeFilter {...location} types={types} activeType={(location.query && location.query.type) || ''}/>
                         </div>
                     </div>

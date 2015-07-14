@@ -43,6 +43,7 @@ function getPresentations(build) {
         .from('v_presentation', 'p')
         .field('id')
         .field('session_id')
+        .field('acceptance')
         .field('type')
         .field('title')
         .field('authors')
