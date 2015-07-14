@@ -64,7 +64,7 @@ export default class Sessions extends React.Component {
                             <DayFilter showTba={showTba} {...location} dates={dates} activeDate={params.activeDate}/>
                         </div>
                         <div key="typeFilter" className="col-md-4">
-                            <TypeFilter {...location} types={types} activeType={location.query && location.query.type}/>
+                            <TypeFilter {...location} types={types} activeType={(location.query && location.query.type) || ''}/>
                         </div>
                     </div>
 
