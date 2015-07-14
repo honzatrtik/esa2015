@@ -1,7 +1,6 @@
 export default function loggerMiddleWare(next) {
     return action => {
-        const { payload, ...rest} = action;
-        console.log({...rest});
+        console.log(action.type);
         next(action);
     }
 }

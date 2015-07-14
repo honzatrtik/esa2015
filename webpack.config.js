@@ -7,12 +7,9 @@ var plugins = [
             o[k] = JSON.stringify(process.env[k]);
             return o;
         }, {})
-    })
+    }),
+    new webpack.optimize.UglifyJsPlugin({})
 ];
-if (process.env.NODE_ENV === 'production') {
-    plugins.push(new webpack.optimize.UglifyJsPlugin({}));
-}
-
 
 module.exports = {
     entry: __dirname + '/app/client.js',
