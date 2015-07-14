@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import cs from 'react-classset';
 import moment from 'moment';
+import PresentationPreview from './PresentationPreview.js';
 moment.locale('en');
 
 export default class Session extends React.Component {
@@ -12,27 +13,7 @@ export default class Session extends React.Component {
     }
 
     renderPresentation(presentation) {
-        const isContributingPaper = presentation.acceptance === 'Contributing Paper';
-        const classes = cs({
-            'is-contributing-paper': isContributingPaper,
-            presentation: true
-        });
-        return (
-            <div key={presentation.id} className={classes}>
-                <Link className="presentation-link" to={`/presentation/${presentation.id}`}>
-                    <h5 key="title" className="presentation-title">
-                        <div className="row">
-                            <div className="col-md-11">{presentation.title}</div>
-                            <div className="col-md-1 text-muted">{presentation.type}</div>
-                        </div>
-                    </h5>
-                    <p key="description">
-                        <span key="authors">{presentation.authors}</span><br />
-                        <em key="organisations">{presentation.organisations}</em>
-                    </p>
-                </Link>
-            </div>
-        );
+        return <PresentationPreview key={presentation.id} presentation={presentation} />
     }
 
     render() {
@@ -40,6 +21,18 @@ export default class Session extends React.Component {
 
         const start = moment(session.start).format('HH:mm');
         const end = moment(session.end).format('HH:mm');
+
+        const chairs = [session.chair1, session.chair2].filter(v=>v);
+        const organisations = [session.chair1_organisation, session.chair2_organisation].filter(v=>v);;
+
+        function renderChair(chair, i) {
+            return (
+                <div key={i} className="chairs-chair">
+                    <span key="authors">{chair}</span><br />
+                    <em key="organisations">{organisations[i]}</em>
+                </div>
+            );
+        }
 
         return (
             <div className="session">
@@ -61,7 +54,11 @@ export default class Session extends React.Component {
                     </div>
                 </div>
                 <div key="presentations" className="presentations row">
-                    <div className="col-md-9  col-md-offset-3">
+                    <div key="chairs" className="col-md-3">
+                        <h5>{chairs.length > 1 ? 'Chairs:' : 'Chair:'}</h5>
+                        {chairs.map(renderChair)}
+                    </div>
+                    <div key="presentations" className="col-md-9">
                         {session.presentations.map(this.renderPresentation)}
                     </div>
                 </div>

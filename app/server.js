@@ -1,3 +1,4 @@
+import newrelic from 'newrelic';
 import React from 'react';
 import Router from 'react-router';
 import Location from 'react-router/lib/Location';
@@ -106,37 +107,6 @@ function getHtml(req, res) {
     });
 }
 
-app.get('/pdf', (req, res) => {
-    const file = __dirname + '/build/esa12th-prague-programme.pdf';
-    fs.exists(file, function (exists) {
-        if (exists) {
-            return res.sendFile(file);
-        } else {
-
-            getHtml(req, res).then(data => {
-                const { html, title } = data;
-
-                const pdf = require('html-pdf');
-                const options = {
-                    timeout: 90000,
-                    format: 'A4'
-                };
-
-                pdf.create(renderPage(html, title), options).toStream(function(err, stream){
-                    if (err) throw err;
-                    stream.pipe(fs.createWriteStream(file));
-                    stream.on('end', () => {
-                        return res.sendFile(file);
-                    });
-                });
-
-            }).catch(data => {
-                handleError(res, data.status, data.error);
-            });
-        }
-    });
-
-});
 
 app.get('*', (req, res) => {
     getHtml(req, res).then(data => {

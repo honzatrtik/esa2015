@@ -1,15 +1,16 @@
 import React from 'react';
 import { getTypes } from '../api.js';
 
+import { Link } from 'react-router';
 export default class App extends React.Component {
 
     render() {
 
         return (
             <div>
-                <div id="header">
+                <Link to="/" id="header">
                     <h1>ESA 2015 Prague - Conference Programme</h1>
-                </div>
+                </Link>
 
                 <div className="container">
                     <div className="row">

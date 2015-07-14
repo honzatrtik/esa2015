@@ -48,8 +48,17 @@ export default class Presentations extends React.Component {
 
                     <div key="header" className="presentation-header">
 
-                        <div className="row">
-                            <div key="date-room" className="col-md-12">
+                        <div key="title" className="row">
+                            <div key="title" className="col-md-10">
+                                <h3>{session.title}</h3>
+                            </div>
+                            <div key="short" className="col-md-2">
+                                <h3 className="text-muted">{session.short}</h3>
+                            </div>
+                        </div>
+
+                        <div key="date-room" className="row">
+                            <div className="col-md-12">
                                 <h4>
                                     {start != '00:00' && date}{'\u00a0\u00a0'}
                                     {start == '00:00' ? <abbr title="To be announced">tba</abbr> : [start, end].join('\u00a0-\u00a0')}<br />
@@ -58,14 +67,6 @@ export default class Presentations extends React.Component {
                             </div>
                         </div>
 
-                        <div className="row">
-                            <div key="title" className="col-md-10">
-                                <h3>{session.title}</h3>
-                            </div>
-                            <div key="short" className="col-md-2">
-                                <h3 className="text-muted">{session.short}</h3>
-                            </div>
-                        </div>
                     </div>
 
                     <div className="row">

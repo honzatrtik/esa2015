@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { getSessions } from '../api.js';
 
 import loader from '../createLoaderDecorator.js';
-import { listSessionsAction } from '../actions/actions.js';
+import { listSessionsByDateAction } from '../actions/actions.js';
 import config from '../config.js';
 import { getRandomInt }  from '../utils.js';
 import DocumentTitle from 'react-document-title';
@@ -16,7 +16,7 @@ moment.locale('en');
 @loader(
     (dispatch, props, getState) => {
         const state = getState();
-        return listSessionsAction(dispatch)({ type: props.location.query && props.location.query.type });
+        return listSessionsByDateAction(dispatch)({ type: props.location.query && props.location.query.type });
     },
     (state, props) => {
         return {

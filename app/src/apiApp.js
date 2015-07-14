@@ -5,6 +5,8 @@ import apicache from 'apicache';
 import { dbUrl } from './config.js';
 import cors from 'cors';
 import Promise from './Promise.js';
+import moment from 'moment';
+moment.locale('en');
 
 const squelPg = squel.useFlavour('postgres');
 squelPg.cls.DefaultQueryBuilderOptions.tableAliasQuoteCharacter = '"';
@@ -23,6 +25,7 @@ function query() {
                 reject(err);
             } else {
                 args.push((err, result) => {
+                    done();
                     if (err) {
                         reject(err);
                     } else {
@@ -30,9 +33,43 @@ function query() {
                     }
                 });
                 client.query.apply(client, args);
-                done();
             }
         });
+    });
+}
+
+function getPresentations(build) {
+    let builder = squelPg.select()
+        .from('v_presentation', 'p')
+        .field('id')
+        .field('session_id')
+        .field('type')
+        .field('title')
+        .field('authors')
+        .field('organisations')
+        .field('presenting_author')
+        .order('type')
+        .order('authors');
+
+    typeof build === 'function' && build(builder);
+
+    return query(builder.toString()).then(result => {
+        return result.rows;
+    });
+}
+
+function getSessions(build) {
+
+    const builder = squelPg.select()
+        .from('v_session')
+        .field('*')
+        .order('start')
+        .order('short');
+
+    typeof build === 'function' && build(builder);
+
+    return query(builder.toString()).then(result => {
+        return result.rows;
     });
 }
 
@@ -40,7 +77,7 @@ function query() {
 let app = express();
 app.use(cors());
 
-app.get('/types', cache('30 minutes'), (req, res) => {
+app.get('/types', cache('10 minutes'), (req, res) => {
 
     const sql = squelPg.select()
         .from('presentation_data', 'd1')
@@ -53,66 +90,115 @@ app.get('/types', cache('30 minutes'), (req, res) => {
     });
 });
 
-app.get('/sessions', cache('5 minutes'), (req, res) => {
-
-    let builder = squelPg.select()
-        .from('v_presentation', 'p')
-        .field('id')
-        .field('session_id')
-        .field('type')
-        .field('title')
-        .field('authors')
-        .field('organisations')
-        .field('presenting_author');
-
-    if (req.query.type) {
-        builder.where('p.type = ?', req.query.type);
-    }
-
-    const sql = builder.toString();
-
-    query(sql).then(result => {
-        const presentations = result.rows;
-        const sql = squelPg.select()
-            .from('v_session', 's')
-            .field('*')
-            .where('s.id IN ?', presentations.map(row => row['session_id']))
-            .order('s.start')
-            .toString();
-
-        query(sql).then(result => {
-            res.json(result.rows.map(session => {
+app.get('/sessions', cache('10 minutes'), (req, res) => {
+    getPresentations().then(presentations => {
+        if (!presentations.length) {
+            return res.json([]);
+        }
+        getSessions(builder => {
+            builder.where('id IN ?', presentations.map(row => row['session_id']));
+        }).then(sessions => {
+            res.json(sessions.map(session => {
                 session.presentations = presentations.filter(row => row['session_id'] === session['id']);
                 return session;
             }));
         })
     });
-
 });
 
-app.get('/presentations/:id', cache('5 minutes'), (req, res) => {
+app.get('/sessionsByDate/:date', cache('10 minutes'), (req, res) => {
 
-    let builder = squelPg.select()
-        .from('v_presentation', 'p')
-        .field('*')
-        .where('p.id = ?', req.params.id);
-    const sql = builder.toString();
-    query(sql).then(result => {
+    const date = Date.parse(req.params.date);
+    if (isNaN(date)) {
+        return res.sendStatus(400);
+    }
 
-        let presentation = result.rows[0];
+    getSessions(builder => {
+        builder.where('start::date = ?', moment(date).format('YYYY-MM-DD'));
+        if (req.query.type) {
+            const subselect = squelPg.select()
+                .field('DISTINCT session_id')
+                .from('v_presentation')
+                .where('type = ?', req.query.type);
+            builder.where('id IN ?', subselect);
+        }
+    }).then(sessions => {
+        if (!sessions.length) {
+            return res.json([]);
+        }
+        getPresentations(builder => {
+            builder.where('session_id IN ?', sessions.map(row => row['id']));
+        }).then(presentations => {
+            if (!presentations.length) {
+                return res.json([]);
+            }
+            getSessions(builder => {
+                builder.where('id IN ?', presentations.map(row => row['session_id']));
+            }).then(sessions => {
+                res.json(sessions.map(session => {
+                    session.presentations = presentations.filter(row => row['session_id'] === session['id']);
+                    return session;
+                }));
+            })
+        });
+    });
+});
+
+app.get('/sessionsByRoomId/:roomId', cache('10 minutes'), (req, res) => {
+    getSessions(builder => {
+        builder.where('room = ?',req.params.roomId);
+    }).then(sessions => {
+        if (!sessions.length) {
+            return res.json([]);
+        }
+        getPresentations(builder => {
+            builder.where('session_id IN ?', sessions.map(row => row['id']));
+        }).then(presentations => {
+            if (!presentations.length) {
+                return res.json([]);
+            }
+            getSessions(builder => {
+                builder.where('id IN ?', presentations.map(row => row['session_id']));
+            }).then(sessions => {
+                res.json(sessions.map(session => {
+                    session.presentations = presentations.filter(row => row['session_id'] === session['id']);
+                    return session;
+                }));
+            })
+        });
+    });
+});
+
+app.get('/presentations/:id', cache('10 minutes'), (req, res) => {
+
+    getPresentations(builder => {
+        builder.where('id = ?', req.params.id).field('abstract');
+    }).then(rows => {
+
+        let presentation = rows[0];
         if (presentation) {
-            const sql = squelPg.select()
-                .from('v_session', 's')
-                .field('*')
-                .where('s.id = ?', presentation['session_id'])
-                .toString();
 
-            query(sql).then(result => {
-                presentation.session = result.rows[0];
-                return res.json(presentation);
+            getPresentations(builder => {
+                builder
+                    .field('abstract')
+                    .where('session_id = ?', presentation['session_id']);
+
+            }).then(presentations => {
+                getSessions(builder => {
+                    if (presentations.length) {
+                        builder.where('id IN ?', presentations.map(row => row['session_id']));
+                    }
+                }).then(sessions => {
+
+                    let session = sessions[0];
+                    session.presentations = presentations;
+                    presentation.session = session;
+                    res.json(presentation);
+                })
             });
+
         } else {
-            return res.json(presentation);
+            return res.sendStatus(404);
         }
 
     });

@@ -5,7 +5,7 @@ import DayFilter from './DayFilter.js'
 import TypeFilter from './TypeFilter.js'
 
 import loader from '../createLoaderDecorator.js';
-import { listSessionsAction, listTypesAction } from '../actions/actions.js';
+import { listSessionsByDateAction, listTypesAction } from '../actions/actions.js';
 import config from '../config.js';
 import { getRandomInt }  from '../utils.js';
 import DocumentTitle from 'react-document-title';
@@ -19,7 +19,7 @@ moment.locale('en');
     (dispatch, props, getState) => {
         let promises = [];
         const state = getState();
-        promises.push(listSessionsAction(dispatch)({ type: props.location.query && props.location.query.type }));
+        promises.push(listSessionsByDateAction(dispatch)(props.params.activeDate, { type: props.location.query && props.location.query.type }));
         if (!state.types) {
             promises.push(listTypesAction(dispatch)());
         }
@@ -27,14 +27,17 @@ moment.locale('en');
     },
     (state, props) => {
         return {
-            sessions: state.sessions.sessions[props.params.activeDate],
+            sessions: state.sessionsByDate.list,
             types: state.types,
-            showTba: state.sessions.sessions['tba'] && state.sessions.sessions['tba'].length,
-        }
+            date: state.sessionsByDate.date
+        };
     },
-    (state, props) => state.types
-        && state.sessions
-        && ((props.location.query && props.location.query.type) == (state.sessions.params && state.sessions.params.type))
+    (state, props) => {
+        return state.types
+            && state.sessionsByDate
+            && ((props.location.query && props.location.query.type) == (state.sessionsByDate.query && state.sessionsByDate.query.type))
+            && state.sessionsByDate.date === props.params.activeDate
+    }
 )
 export default class Sessions extends React.Component {
 
@@ -49,10 +52,12 @@ export default class Sessions extends React.Component {
 
     render() {
         const dates = config.dates;
-        const { activeDate, location, sessions, types, params, loading, showTba } = this.props;
+
+
+        const { location, sessions, types, params, loading, showTba } = this.props;
 
         return (
-            <DocumentTitle title={['Programme - ', moment(activeDate).format('ddd D. M.'), ' | ESA 2015 Prague'].join('  ')}>
+            <DocumentTitle title={['Programme - ', moment(params.activeDate).format('ddd D. M.'), ' | ESA 2015 Prague'].join('  ')}>
                 <div>
                     <div key="filter" className="filters row">
                         <div key="dayFilter" className="col-md-8">
@@ -67,7 +72,7 @@ export default class Sessions extends React.Component {
                         <div className="row">
                             <div className="col-md-12">
                                 {(sessions || []).map(s => <Session key={s.id} session={s} />)}
-                                {!!sessions || <div className="text-muted text-center">programme for this day will be announced</div>}
+                                {!sessions.length && <div className="text-muted text-center">There is no programme for this day / selected RN/RS or the programme will be announced soon</div>}
                             </div>
                         </div>
                     </div>

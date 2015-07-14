@@ -10,6 +10,10 @@ export default function promiseMiddleWare(next) {
             delete action.types;
             delete action.promise;
 
+            if (types.filter(t => t).length != 3) {
+                throw new Error('Exactly 3 action types must be passed as array.')
+            }
+
             action.type = types[0];
             next(action);
 

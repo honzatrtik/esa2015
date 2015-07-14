@@ -74,7 +74,7 @@ class ImportCommand extends Command
 		$url = $input->getArgument('url') ?: call_user_func($this->urlCreator);
 		$output->write('Using url: ' . $url);
 
-		$it = new SessionExportIterator(new Stream($url));
+		$it = new SessionExportIterator(new Stream($url), 'session');
 		$qb = $this->db->createQueryBuilder();
 
 		foreach($it as $data)

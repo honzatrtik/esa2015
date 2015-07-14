@@ -1,6 +1,8 @@
 #header {
+	display: block;
 	text-align: center;
 	color: #fff;
+	text-decoration: none;
 	background: url('http://esa12thconference.eu/sites/esa12thconference.eu/files/esa_foto_web2_550_bw_0.jpg') no-repeat 50% 25% #e47e3d;
 	margin: 0;
 	padding: 0;
@@ -8,8 +10,8 @@
 		margin: 0;
 		padding: 1em 1em 1.5em 1em;
 		text-shadow: 1px 1px 5px rgba(0, 0, 0, .5);
-		border-bottom: 1px solid rgba(128, 128, 128, .5)
 	}
+	border-bottom: 1px solid @gray-light;
 }
 
 h5 {
@@ -49,6 +51,9 @@ body {
 
 .presentation-title {
 	color: @gray-darker;
+}
+.presentation-header {
+	border-bottom: 1px solid @gray-light;
 }
 
 .session {

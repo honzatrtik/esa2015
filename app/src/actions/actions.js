@@ -10,11 +10,12 @@ export function getPresentationAction(dispatch) {
     });
 }
 
-export function listSessionsAction(dispatch) {
-    return (params) => dispatch({
-        types: [constants.SESSION_LIST_REQUEST, constants.SESSION_LIST_SUCCESS, constants.SESSION_LIST_ERROR],
-        promise: api.listSessions(params),
-        params
+export function listSessionsByDateAction(dispatch) {
+    return (date, query) => dispatch({
+        types: [constants.SESSION_LIST_BY_DATE_REQUEST, constants.SESSION_LIST_BY_DATE_SUCCESS, constants.SESSION_LIST_BY_DATE_ERROR],
+        promise: api.listSessionsByDate(date, query),
+        date,
+        query
     });
 }
 

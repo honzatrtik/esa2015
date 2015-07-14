@@ -36,6 +36,7 @@
     "invariant": "^2.1.0",
     "less": "^2.5.1",
     "moment": "^2.9.0",
+    "newrelic": "^1.21.1",
     "pg": "^4.4.0",
     "phantom-html-to-pdf": "^0.3.0",
     "qs": "^4.0.0",
