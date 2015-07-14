@@ -49,7 +49,7 @@ const typeNames = {
     'OC': 'Opening Ceremony',
     'CP': 'Closing Plenary',
     'MA': 'Meetings & Assemblies',
-    'EL': 'Esa Lectures'
+    'EL': 'ESA Lectures'
 };
 
 export default {
