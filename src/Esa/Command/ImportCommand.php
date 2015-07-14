@@ -174,7 +174,7 @@ class ImportCommand extends Command
 
 
 		// Clean record, not imported / updated
-		$this->db->executeQuery('DELETE FROM presentations WHERE id NOT IN (?)',
+		$this->db->executeQuery('DELETE FROM presentation WHERE id NOT IN (?)',
 			[$presentationIds],
 			[\Doctrine\DBAL\Connection::PARAM_INT_ARRAY]
 		);
