@@ -4,6 +4,7 @@ import cs from 'react-classset';
 import moment from 'moment';
 moment.locale('en');
 import reactMixin from 'react-mixin';
+import { typeNames } from '../config.js';
 
 @reactMixin.decorate(Navigation)
 export default class TypeFilter extends React.Component {
@@ -38,7 +39,7 @@ export default class TypeFilter extends React.Component {
                 <div className="col-md-8">
                     <select onChange={this.handleChange} className="form-control" value={activeType || ''}>
                         <option value={''}>all</option>
-                        {types.map(t => <option key={t} value={t}>{t}</option>)}
+                        {types.map(t => <option key={t} value={t}>{t} {typeNames[t]}</option>)}
                     </select>
                 </div>
             </div>

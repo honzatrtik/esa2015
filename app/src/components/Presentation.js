@@ -98,7 +98,7 @@ export default class Presentations extends React.Component {
                             <span key="authors">{presentation.authors}</span><br />
                             <em key="organisations">{presentation.organisations}</em>
                         </p>
-                        <p key="abstract">
+                        <p className="u-pre-line" key="abstract">
                             {presentation.abstract}
                         </p>
                     </div>

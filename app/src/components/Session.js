@@ -59,6 +59,7 @@ export default class Session extends React.Component {
                         {chairs.map(renderChair)}
                     </div>
                     <div key="presentations" className="col-md-9">
+                        {session.info && <p className="u-pre-line u-muted-info">{session.info}</p>}
                         {session.presentations.map(this.renderPresentation)}
                     </div>
                 </div>

@@ -138,30 +138,30 @@ app.get('/sessionsByDate/:date', (req, res) => {
     });
 });
 
-app.get('/sessionsByRoomId/:roomId', (req, res) => {
-    getSessions(builder => {
-        builder.where('room = ?',req.params.roomId);
-    }).then(sessions => {
-        if (!sessions.length) {
-            return res.json([]);
-        }
-        getPresentations(builder => {
-            builder.where('session_id IN ?', sessions.map(row => row['id']));
-        }).then(presentations => {
-            if (!presentations.length) {
-                return res.json([]);
-            }
-            getSessions(builder => {
-                builder.where('id IN ?', presentations.map(row => row['session_id']));
-            }).then(sessions => {
-                res.json(sessions.map(session => {
-                    session.presentations = presentations.filter(row => row['session_id'] === session['id']);
-                    return session;
-                }));
-            })
-        });
-    });
-});
+//app.get('/sessionsByRoomId/:roomId', (req, res) => {
+//    getSessions(builder => {
+//        builder.where('room_id = ?',req.params.roomId);
+//    }).then(sessions => {
+//        if (!sessions.length) {
+//            return res.json([]);
+//        }
+//        getPresentations(builder => {
+//            builder.where('session_id IN ?', sessions.map(row => row['id']));
+//        }).then(presentations => {
+//            if (!presentations.length) {
+//                return res.json([]);
+//            }
+//            getSessions(builder => {
+//                builder.where('id IN ?', presentations.map(row => row['session_id']));
+//            }).then(sessions => {
+//                res.json(sessions.map(session => {
+//                    session.presentations = presentations.filter(row => row['session_id'] === session['id']);
+//                    return session;
+//                }));
+//            })
+//        });
+//    });
+//});
 
 app.get('/presentations/:id', (req, res) => {
 

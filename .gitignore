@@ -5,3 +5,4 @@
 !.gitkeep
 npm-debug.log
 .idea
+newrelic_agent.log

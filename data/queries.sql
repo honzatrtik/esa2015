@@ -12,7 +12,8 @@ CREATE VIEW v_session AS
     coalesce(d7.indexed, d7.val) AS chair1,
     coalesce(d8.indexed, d8.val) AS chair2,
     coalesce(d9.indexed, d9.val) AS chair1_organisation,
-    coalesce(d10.indexed, d10.val) AS chair2_organisation
+    coalesce(d10.indexed, d10.val) AS chair2_organisation,
+    coalesce(d11.indexed, d11.val) AS info
   FROM session AS s
     LEFT JOIN session_data AS "d1" ON ((s.id = d1.session_id) AND (d1.key = 'session_short'))
     LEFT JOIN session_data AS "d2" ON ((s.id = d2.session_id) AND (d2.key = 'session_start'))
@@ -24,6 +25,7 @@ CREATE VIEW v_session AS
     LEFT JOIN session_data AS "d8" ON ((s.id = d8.session_id) AND (d8.key = 'chair2'))
     LEFT JOIN session_data AS "d9" ON ((s.id = d9.session_id) AND (d9.key = 'chair1_organisation'))
     LEFT JOIN session_data AS "d10" ON ((s.id = d10.session_id) AND (d10.key = 'chair2_organisation'))
+    LEFT JOIN session_data AS "d11" ON ((s.id = d11.session_id) AND (d11.key = 'session_info'))
   ;
 
 

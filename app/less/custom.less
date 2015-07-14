@@ -23,6 +23,15 @@ body {
 	font-family: 'Roboto',sans,arial;
 }
 
+.u-pre-line {
+	white-space: pre-line;
+}
+
+.u-muted-info {
+	color: @gray-dark;
+	font-size: @font-size-small;
+}
+
 .presentations {
 	margin-top: 1em;
 	margin-bottom: 2em;
@@ -35,7 +44,6 @@ body {
 
 .presentation {
 	color: @gray-dark;
-	white-space: pre-line;
 	&:first-child {
 		border-top: none;
 	}
@@ -63,8 +71,7 @@ body {
 
 .presentation.is-contributing-paper .presentation-title:after {
 	content: '(Contributing paper)';
-	font-size: @font-size-small;
-	color: @gray-dark;
+	.u-muted-info;
 }
 
 .presentation-header {

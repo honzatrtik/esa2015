@@ -1,4 +1,6 @@
-import newrelic from 'newrelic';
+if (process.env.NODE_ENV === 'production') {
+    require('newrelic');
+}
 import throng from 'throng';
 import React from 'react';
 import Router from 'react-router';
