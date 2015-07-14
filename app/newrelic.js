@@ -5,14 +5,11 @@
  * description of configuration variables and their potential values.
  */
 exports.config = {
-  /**
-   * Array of application names.
-   */
-  app_name: ['esa2015'],
+
   /**
    * Your New Relic license key.
    */
-  license_key: '533986722eb5e2b0842faa5470b36cad80a24bec',
+  license_key: '79a59935ca1ef53f4dd0baf6b7e3052547036cb3',
   logging: {
     /**
      * Level at which to log. 'trace' is most useful to New Relic when diagnosing
