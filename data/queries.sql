@@ -50,7 +50,6 @@ CREATE VIEW v_presentation AS
   WHERE coalesce(d7.indexed, d7.val) IN (
     'Contributing Paper',
     'Poster',
-    'Accepted'
+    'Accepted',
+    'Special'
   );
-
-
