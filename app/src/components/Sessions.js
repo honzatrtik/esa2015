@@ -58,7 +58,7 @@ export default class Sessions extends React.Component {
 
         return (
             <DocumentTitle title={['Programme - ', moment(params.activeDate).format('ddd D. M.'), ' | ESA 2015 Prague'].join('  ')}>
-                <div>
+                <div style={{ opacity: loading ? .4 : 1 }}>
                     <div key="filter" className="filters row">
                         <div key="dayFilter" className="col-md-8">
                             <DayFilter showTba={showTba} {...location} dates={dates} activeDate={params.activeDate}/>
@@ -68,7 +68,7 @@ export default class Sessions extends React.Component {
                         </div>
                     </div>
 
-                    <div style={{ opacity: loading ? .5 : 1 }} key="sessions">
+                    <div key="sessions">
                         <div className="row">
                             <div className="col-md-12">
                                 {(sessions || []).map(s => <Session key={s.id} session={s} />)}

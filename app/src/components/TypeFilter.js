@@ -36,7 +36,7 @@ export default class TypeFilter extends React.Component {
             <div className="form-horizontal row">
                 <label className="control-label col-md-4">RN/RS</label>
                 <div className="col-md-8">
-                    <select onChange={this.handleChange} className="form-control" defaultValue={activeType || ''}>
+                    <select onChange={this.handleChange} className="form-control" value={activeType || ''}>
                         <option value={''}>all</option>
                         {types.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>

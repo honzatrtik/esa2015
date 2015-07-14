@@ -8,7 +8,6 @@ moment.locale('en');
 
 export default createStore(null, {
     [constants.SESSION_LIST_BY_DATE_SUCCESS]: (state, action) => {
-        console.log( action);
         return {
             date: action.date,
             query: action.query,
