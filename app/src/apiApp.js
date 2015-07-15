@@ -49,8 +49,7 @@ function getPresentations(build) {
         .field('authors')
         .field('organisations')
         .field('presenting_author')
-        .order('type')
-        .order('authors');
+        .order('order');
 
     typeof build === 'function' && build(builder);
 

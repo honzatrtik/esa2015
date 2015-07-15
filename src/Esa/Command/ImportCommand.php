@@ -31,7 +31,8 @@ class ImportCommand extends Command
 		'paper_ID',
 		'contribution_type',
 		'authors',
-		'acceptance'
+		'acceptance',
+		'order'
 	];
 
 	/** @var  Connection  */
@@ -147,10 +148,12 @@ class ImportCommand extends Command
 				}
 			}
 
-			foreach($presentations as $presentationData)
+			foreach($presentations as $order => $presentationData)
 			{
 				$presentationId = $presentationData['paperID'];
 				$this->db->delete('presentation_data', ['presentation_id' => $presentationId]);
+
+				$presentationData['order'] = $order;
 
 				foreach($presentationData as $key => $val)
 				{

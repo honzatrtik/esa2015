@@ -40,7 +40,8 @@ CREATE VIEW v_presentation AS
     coalesce(d4.indexed, d4.val) AS presenting_author,
     coalesce(d5.indexed, d5.val) AS title,
     coalesce(d6.indexed, d6.val) AS abstract,
-    coalesce(d7.indexed, d7.val) AS acceptance
+    coalesce(d7.indexed, d7.val) AS acceptance,
+    coalesce(d8.indexed, d8.val) AS "order"
   FROM presentation AS p
     LEFT JOIN presentation_data AS "d1" ON ((p.id = d1.presentation_id) AND (d1.key = 'contribution_type'))
     LEFT JOIN presentation_data AS "d2" ON ((p.id = d2.presentation_id) AND (d2.key = 'authors'))
@@ -49,6 +50,7 @@ CREATE VIEW v_presentation AS
     LEFT JOIN presentation_data AS "d5" ON ((p.id = d5.presentation_id) AND (d5.key = 'title'))
     LEFT JOIN presentation_data AS "d6" ON ((p.id = d6.presentation_id) AND (d6.key = 'abstract'))
     LEFT JOIN presentation_data AS "d7" ON ((p.id = d7.presentation_id) AND (d7.key = 'acceptance'))
+    LEFT JOIN presentation_data AS "d8" ON ((p.id = d8.presentation_id) AND (d8.key = 'order'))
   WHERE coalesce(d7.indexed, d7.val) IN (
     'Contributing Paper',
     'Poster',
