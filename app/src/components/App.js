@@ -13,6 +13,15 @@ export default class App extends React.Component {
                 </Link>
 
                 <div className="container">
+
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div class="alert alert-info">
+                                <em>Note: Posters will be allocated on 15th July. Programme for RN32 will be announced as soon as possible - we are waiting for a time schedule from RN coordinator.</em>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="row">
                         <div className="col-md-12">
                             {this.props.children}
