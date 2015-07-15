@@ -41,7 +41,7 @@ CREATE VIEW v_presentation AS
     coalesce(d5.indexed, d5.val) AS title,
     coalesce(d6.indexed, d6.val) AS abstract,
     coalesce(d7.indexed, d7.val) AS acceptance,
-    coalesce(d8.indexed, d8.val) AS "order"
+    coalesce(d8.indexed, d8.val) AS position
   FROM presentation AS p
     LEFT JOIN presentation_data AS "d1" ON ((p.id = d1.presentation_id) AND (d1.key = 'contribution_type'))
     LEFT JOIN presentation_data AS "d2" ON ((p.id = d2.presentation_id) AND (d2.key = 'authors'))
