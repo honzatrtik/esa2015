@@ -78,7 +78,7 @@ function getSessions(build) {
 let app = express();
 app.use(cors());
 
-app.get('/types', (req, res) => {
+app.get('/types', cache('1 minute'), (req, res) => {
 
     const sql = squelPg.select()
         .from('presentation_data', 'd1')
@@ -91,7 +91,7 @@ app.get('/types', (req, res) => {
     });
 });
 
-app.get('/sessions', (req, res) => {
+app.get('/sessions', cache('1 minute'), (req, res) => {
     getPresentations().then(presentations => {
         if (!presentations.length) {
             return res.json([]);
@@ -107,7 +107,7 @@ app.get('/sessions', (req, res) => {
     });
 });
 
-app.get('/sessionsByDate/:date', (req, res) => {
+app.get('/sessionsByDate/:date', cache('1 minute'), (req, res) => {
 
     const date = Date.parse(req.params.date);
     if (isNaN(date)) {
@@ -163,7 +163,7 @@ app.get('/sessionsByDate/:date', (req, res) => {
 //    });
 //});
 
-app.get('/presentations/:id', (req, res) => {
+app.get('/presentations/:id', cache('1 minute'), (req, res) => {
 
     getPresentations(builder => {
         builder.where('id = ?', req.params.id).field('abstract');
