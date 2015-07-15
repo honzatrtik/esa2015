@@ -2,7 +2,7 @@ import express from 'express';
 import pg from 'pg';
 import squel from 'squel';
 import apicache from 'apicache';
-import { dbUrl } from './config.js';
+import { dbUrl } from './configServer.js';
 import cors from 'cors';
 import Promise from './Promise.js';
 import moment from 'moment';
