@@ -7,6 +7,7 @@ import routes from './src/routes.js';
 import express from 'express';
 import api from './src/apiApp.js';
 import Promise from './src/Promise.js';
+import ErrorGeneric from './src/components/ErrorGeneric.js';
 import { getTypes, getSessions } from './src/api.js';
 import { stringify } from './src/utils.js';
 import createRedux from './src/createRedux.js';
@@ -15,20 +16,36 @@ import DocumentTitle from 'react-document-title';
 import state from 'express-state';
 import { appUrl, workers } from './src/config.js';
 import fs from 'fs';
+import { gaUa } from './src/config.js'
 
 
-
-function handleError(res, status, error) {
-    const debug = (process.env.NODE_ENV !== 'production');
-    if (debug && error && error.stack) {
-        res.status(status).send(error.stack.replace(/\n/g, '<br />'));
-    } else {
-        res.status(status).send('Error: ' + status);
+function handle(res, data) {
+    let { status, html, title, state, redirect } = data;
+    status = status || 200;
+    if (redirect) {
+        return res.redirect(redirect);
     }
+    res.expose(state, '__INITIAL_DATA__');
+    return res.status(status).send(renderPage(html, title, res.locals.state.toString()));
+}
+
+function handleError(res, data) {
+    let { status, title, html, error } = data;
+    console.warn(error);
+    const debug = (process.env.NODE_ENV !== 'production');
+    let message = debug && error && error.stack && error.stack.replace(/\n/g, '<br />');
+    message = message || 'Internal server error occured. Administrator was notified.';
+    status = status || 500;
+    title = title || status;
+    html = html || React.renderToString(<ErrorGeneric title={title}><div dangerouslySetInnerHTML={{__html: message }}></div></ErrorGeneric>);
+    return res.status(status).send(renderPage(html, title));
+
 }
 
 function renderPage(html, title, state) {
-    return `
+
+    const clientJs = state ? '<script src="/build/client.js"></script>' : '';
+        return `
         <!doctype html>
         <html>
         <head>
@@ -49,8 +66,10 @@ function renderPage(html, title, state) {
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
             })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            ga('create', '${gaUa}', 'auto');
+            ga('_trackPageview');
         </script>
-        <script src="/build/client.js"></script>
+        ${clientJs}
         </body>
         </html>`;
 }
@@ -71,8 +90,11 @@ function getHtml(req, res) {
             }
 
             if (!initialState || !initialState.components) {
+                const html = React.renderToString(<Error404 location={location} />);
                 return reject({
-                    status: 404
+                    status: 404,
+                    title: DocumentTitle.rewind(),
+                    html
                 });
             }
             if (error) {
@@ -91,6 +113,7 @@ function getHtml(req, res) {
                 );
 
                 return resolve({
+                    status: 200,
                     title: DocumentTitle.rewind(),
                     html,
                     state: redux.getState()
@@ -122,14 +145,10 @@ function start() {
 
     app.get('*', (req, res) => {
         getHtml(req, res).then(data => {
-            const { html, title, state, redirect } = data;
-            if (redirect) {
-                return res.redirect(redirect);
-            }
-            res.expose(state, '__INITIAL_DATA__');
-            return res.send(renderPage(html, title, res.locals.state.toString()));
+            return handle(res, data);
         }).catch(data => {
-            handleError(res, data.status, data.error);
+            data = data instanceof Error ? { error: data } : data;
+            return handleError(res, data);
         });
     });
 

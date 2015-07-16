@@ -2,7 +2,9 @@ import React from 'react';
 import { Route, Redirect } from 'react-router';
 import App from './components/App.js';
 import Sessions from './components/Sessions.js';
-import SessionsAll from './components/SessionsAll.js';
+import SessionsByRoomId from './components/SessionsByRoomId.js';
+import Rooms from './components/Rooms.js';
+import Error404 from './components/Error404.js';
 import Presentation from './components/Presentation.js';
 import { dates } from './config.js';
 
@@ -15,12 +17,14 @@ if (!activeDate) {
     activeDate = dates[0];
 }
 
-export default (
+export default [
     <Route component={App}>
         <Redirect from="/" to={`/sessions/${activeDate}`} />
         <Redirect from="/sessions" to={`/sessions/${activeDate}`} />
         <Route path="/sessions/:activeDate" component={Sessions}/>
         <Route path="/presentation/:id" component={Presentation}/>
-        <Route path="/pdf" component={SessionsAll}/>
-    </Route>
-);
+        <Route path="/rooms" component={Rooms}/>
+        <Route path="/room/:roomId" component={SessionsByRoomId}/>
+    </Route>,
+    <Route path="*" component={Error404} />
+];

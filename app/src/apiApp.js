@@ -90,6 +90,23 @@ app.get('/types', cache('1 minute'), (req, res) => {
     });
 });
 
+app.get('/rooms', cache('1 minute'), (req, res) => {
+
+    const sql = squelPg.select()
+        .field('DISTINCT room_id, room')
+        .from('v_session')
+        .where('room_id IS NOT NULL')
+        .order('room')
+        .toString();
+
+    query(sql).then(result => {
+        res.json(result.rows.reduce((map, row) => {
+            map[row['room_id']] = row;
+            return map;
+        }, {}));
+    });
+});
+
 app.get('/sessions', cache('1 minute'), (req, res) => {
     getPresentations().then(presentations => {
         if (!presentations.length) {
@@ -137,30 +154,23 @@ app.get('/sessionsByDate/:date', cache('1 minute'), (req, res) => {
     });
 });
 
-//app.get('/sessionsByRoomId/:roomId', (req, res) => {
-//    getSessions(builder => {
-//        builder.where('room_id = ?',req.params.roomId);
-//    }).then(sessions => {
-//        if (!sessions.length) {
-//            return res.json([]);
-//        }
-//        getPresentations(builder => {
-//            builder.where('session_id IN ?', sessions.map(row => row['id']));
-//        }).then(presentations => {
-//            if (!presentations.length) {
-//                return res.json([]);
-//            }
-//            getSessions(builder => {
-//                builder.where('id IN ?', presentations.map(row => row['session_id']));
-//            }).then(sessions => {
-//                res.json(sessions.map(session => {
-//                    session.presentations = presentations.filter(row => row['session_id'] === session['id']);
-//                    return session;
-//                }));
-//            })
-//        });
-//    });
-//});
+app.get('/sessionsByRoomId/:roomId', (req, res) => {
+    getSessions(builder => {
+        builder.where('room_id = ?',req.params.roomId);
+    }).then(sessions => {
+        if (!sessions.length) {
+            return res.json([]);
+        }
+        getPresentations(builder => {
+            builder.where('session_id IN ?', sessions.map(row => row['id']));
+        }).then(presentations => {
+            res.json(sessions.map(session => {
+                session.presentations = presentations.filter(row => row['session_id'] === session['id']);
+                return session;
+            }));
+        });
+    });
+});
 
 app.get('/presentations/:id', cache('1 minute'), (req, res) => {
 

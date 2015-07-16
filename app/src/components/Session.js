@@ -7,6 +7,12 @@ moment.locale('en');
 
 export default class Session extends React.Component {
 
+    static defaultProps = {
+        showRoom: true,
+        showTime: true,
+        showDate: false
+    };
+
     constructor(props) {
         super(props);
         ['renderPresentation'].forEach(f => this[f] = this[f].bind(this));
@@ -17,8 +23,9 @@ export default class Session extends React.Component {
     }
 
     render() {
-        const { session } = this.props;
+        const { session, showRoom, showTime, showDate } = this.props;
 
+        const date = moment(session.start).format('ddd D. M.');
         const start = moment(session.start).format('HH:mm');
         const end = moment(session.end).format('HH:mm');
 
@@ -40,9 +47,11 @@ export default class Session extends React.Component {
 
                     <div key="time-room" className="col-md-3">
                         <h5>
-                            {start == '00:00' ? <abbr title="To be announced">tba</abbr> : [start, end].join('\u00a0-\u00a0')}
-                            {'\u00a0\u00a0'}
-                            {session.room && ['room', session.room].join(' ')}
+                            {showDate && date + '\u00a0\u00a0'}
+                            {' '}
+                            {showTime && start == '00:00' ? <abbr title="To be announced">tba</abbr> : [start, end].join('\u00a0-\u00a0') + '\u00a0\u00a0'}
+                            {' '}
+                            {showRoom &&  session.room && ['room', session.room].join(' ')}
                         </h5>
                     </div>
 

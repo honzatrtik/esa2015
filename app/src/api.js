@@ -24,8 +24,17 @@ export function listTypes() {
     return promise(superagent.get(appUrl + '/api/types'));
 }
 
+export function listRooms() {
+    return promise(superagent.get(appUrl + '/api/rooms'));
+}
+
 export function listSessionsByDate(date, query) {
     const req = superagent.get(appUrl + '/api/sessionsByDate/' + date).query(query || {});
+    return promise(req);
+}
+
+export function listSessionsByRoomId(roomId) {
+    const req = superagent.get(appUrl + '/api/sessionsByRoomId/' + roomId);
     return promise(req);
 }
 
