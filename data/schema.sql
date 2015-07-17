@@ -33,12 +33,19 @@ CREATE INDEX presentation_key_indexed_IX ON presentation_data ("key" ASC, "index
 
 
 CREATE TABLE author (
-  id integer PRIMARY KEY NOT NULL,
+  id SERIAL PRIMARY KEY,
+  person_id integer DEFAULT NULL,
+  first_char char(1) NOT NULL,
+  "author_hash" char(40) NOT NULL,
   "email" varchar(1024) NOT NULL,
   "name" varchar(1024) NOT NULL,
   "organisation" varchar(1024) NOT NULL
 );
-CREATE INDEX author_email_UQ ON author ("email" ASC);
+CREATE UNIQUE INDEX author_author_hash_UQ ON author ("author_hash" ASC);
+CREATE INDEX author_first_char_IX ON author ("first_char" ASC);
+CREATE INDEX author_email_IX ON author ("email" ASC);
+CREATE INDEX author_person_id_IX ON author ("person_id" ASC);
+
 
 CREATE TABLE presentation_to_author (
   presentation_id integer NOT NULL,

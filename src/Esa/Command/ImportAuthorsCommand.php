@@ -52,6 +52,11 @@ class ImportAuthorsCommand extends Command
 		;
 	}
 
+	protected function makeHash($data)
+	{
+		return sha1(join(',', [intval($data['personID']), $data['email']]));
+	}
+
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 
@@ -62,29 +67,40 @@ class ImportAuthorsCommand extends Command
 
 		foreach($it as $data)
 		{
-			$authorId = $data['personID'];
+			$hash = $this->makeHash($data);
+
+			$personId = intval($data['personID']);
 			$presentationIds = array_filter(array_map('trim', explode(',', $data['paperIDs'])));
 
 			$this->db->beginTransaction();
 
-			$this->db->delete('author', ['id' => $authorId]);
+			if (strpos(strtoupper($data['name']), 'CH') === 0)
+			{
+				$firstChar = 'Ch';
+			}
+			else
+			{
+				$firstChar = mb_substr($data['name'], 0, 1, 'UTF8');
+			}
+
+
+			$this->db->delete('author', ['author_hash' => $hash]);
 			$this->db->insert('author', [
-				'id' => $authorId,
+				'person_id' => $personId ?: NULL,
+				'author_hash' => $hash,
+				'first_char' => $firstChar,
 				'email' => $data['email'],
 				'name' => $data['name'],
 				'organisation' => $data['organisation'],
 			]);
+
+			$authorId = $this->db->query('SELECT lastval()')->fetchColumn();
 
 			foreach($presentationIds as $presentationId)
 			{
 				$exists = $this->db->fetchColumn('SELECT COUNT(*) FROM presentation WHERE id = ?', [$presentationId]);
 				if ($exists)
 				{
-					$this->db->delete('presentation_to_author', [
-						'author_id' => $authorId,
-						'presentation_id' => $presentationId,
-					]);
-
 					$this->db->insert('presentation_to_author', [
 						'author_id' => $authorId,
 						'presentation_id' => $presentationId,
