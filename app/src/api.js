@@ -28,8 +28,22 @@ export function listRooms() {
     return promise(superagent.get(appUrl + '/api/rooms'));
 }
 
+export function listFirstChars() {
+    return promise(superagent.get(appUrl + '/api/firstChars'));
+}
+
+
+export function listAuthorsByFirstChar(char) {
+    return promise(superagent.get(appUrl + '/api/authorsByFirstChar/' + char));
+}
+
 export function listSessionsByDate(date, query) {
     const req = superagent.get(appUrl + '/api/sessionsByDate/' + date).query(query || {});
+    return promise(req);
+}
+
+export function listSessionsByAuthorHash(hash) {
+    const req = superagent.get(appUrl + '/api/sessionsByAuthorHash/' + hash);
     return promise(req);
 }
 
@@ -40,4 +54,8 @@ export function listSessionsByRoomId(roomId) {
 
 export function getPresentation(id) {
     return promise(superagent.get(appUrl +'/api/presentations/' + id));
+}
+
+export function getAuthor(hash) {
+    return promise(superagent.get(appUrl +'/api/authors/' + hash));
 }

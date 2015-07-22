@@ -1,5 +1,9 @@
 export { default as sessionsByDate } from './sessionsByDate.js';
 export { default as sessionsByRoomId } from './sessionsByRoomId.js';
+export { default as sessionsByAuthorHash } from './sessionsByAuthorHash.js';
 export { default as presentation } from './presentation.js';
+export { default as author } from './author.js';
 export { default as types } from './types.js';
 export { default as rooms } from './rooms.js';
+export { default as firstChars } from './firstChars';
+export { default as authorsByFirstChar } from './authorsByFirstChar';

@@ -74,21 +74,26 @@ class ImportAuthorsCommand extends Command
 
 			$this->db->beginTransaction();
 
+			/*
 			if (strpos(strtoupper($data['name']), 'CH') === 0)
 			{
 				$firstChar = 'Ch';
 			}
-			else
-			{
-				$firstChar = mb_substr($data['name'], 0, 1, 'UTF8');
-			}
+			*/
 
+			$firstChar = mb_substr($data['name'], 0, 1, 'UTF8');
+
+			$lastName = isset($data['lastname'])
+				? $data['lastname']
+				: trim(explode(',', $data['name'])[0]);
 
 			$this->db->delete('author', ['author_hash' => $hash]);
 			$this->db->insert('author', [
 				'person_id' => $personId ?: NULL,
 				'author_hash' => $hash,
 				'first_char' => $firstChar,
+				'first_name' => $data['firstname'] ?: NULL,
+				'last_name' =>  $lastName ?: NULL,
 				'email' => $data['email'],
 				'name' => $data['name'],
 				'organisation' => $data['organisation'],

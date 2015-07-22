@@ -3,7 +3,10 @@ import { Route, Redirect } from 'react-router';
 import App from './components/App.js';
 import Sessions from './components/Sessions.js';
 import SessionsByRoomId from './components/SessionsByRoomId.js';
+import SessionsByAuthorHash from './components/SessionsByAuthorHash.js';
 import Rooms from './components/Rooms.js';
+import FirstChars from './components/FirstChars.js';
+import AuthorsByFirstChar from './components/AuthorsByFirstChar';
 import Error404 from './components/Error404.js';
 import Presentation from './components/Presentation.js';
 import { dates } from './config.js';
@@ -25,6 +28,9 @@ export default [
         <Route path="/presentation/:id" component={Presentation}/>
         <Route path="/rooms" component={Rooms}/>
         <Route path="/room/:roomId" component={SessionsByRoomId}/>
+        <Route path="/index" component={FirstChars}/>
+        <Route path="/index/:char" component={AuthorsByFirstChar}/>
+        <Route path="/author/:hash" component={SessionsByAuthorHash}/>
     </Route>,
     <Route path="*" component={Error404} />
 ];

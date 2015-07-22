@@ -30,9 +30,11 @@ if (empty($app['db.url'])) {
 }
 
 $app['db'] = $app->factory(function() use ($app) {
-	return \Doctrine\DBAL\DriverManager::getConnection([
+	$conn = \Doctrine\DBAL\DriverManager::getConnection([
 		'url' => $app['db.url'],
 	]);
+	$conn->executeQuery("SET client_encoding = 'UTF8'");
+	return $conn;
 });
 
 

@@ -76,7 +76,7 @@ export default class Presentations extends React.Component {
                                     <h4>
                                         {start != '00:00' && date}{'\u00a0\u00a0'}
                                         {start == '00:00' ? <abbr title="To be announced">tba</abbr> : [start, end].join('\u00a0-\u00a0')}<br />
-                                        {session.room && ['room', session.room].join(' ')}
+                                        {session.room && <Link title={'Show programme for room: ' + session.room}  to={`/room/${session.room_id}`}>room {session.room}</Link>}
                                     </h4>
                                 </div>
                             </div>

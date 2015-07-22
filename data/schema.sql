@@ -39,6 +39,8 @@ CREATE TABLE author (
   "author_hash" char(40) NOT NULL,
   "email" varchar(1024) NOT NULL,
   "name" varchar(1024) NOT NULL,
+  "first_name" varchar(1024) DEFAULT NULL,
+  "last_name" varchar(1024) DEFAULT NULL,
   "organisation" varchar(1024) NOT NULL
 );
 CREATE UNIQUE INDEX author_author_hash_UQ ON author ("author_hash" ASC);

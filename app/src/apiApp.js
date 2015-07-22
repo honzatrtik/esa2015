@@ -90,6 +90,35 @@ app.get('/types', cache('1 minute'), (req, res) => {
     });
 });
 
+app.get('/firstChars', cache('1 minute'), (req, res) => {
+
+    const sql = squelPg.select()
+        .from('author')
+        .field('DISTINCT upper(first_char)', 'char')
+        .order('upper(first_char)')
+        .toString();
+
+    query(sql).then(result => {
+        res.json(result.rows.map(row => row['char']));
+    });
+});
+
+app.get('/authorsByFirstChar/:char', cache('1 minute'), (req, res) => {
+
+    const sql = squelPg.select()
+        .from('author')
+        .field('*')
+        .where('upper(first_char) = ?', req.params.char.toUpperCase())
+        .order('last_name')
+        .order('first_name')
+        .toString();
+
+    query(sql).then(result => {
+        res.json(result.rows);
+    });
+});
+
+
 app.get('/rooms', cache('1 minute'), (req, res) => {
 
     const sql = squelPg.select()
@@ -157,6 +186,46 @@ app.get('/sessionsByDate/:date', cache('1 minute'), (req, res) => {
 app.get('/sessionsByRoomId/:roomId', (req, res) => {
     getSessions(builder => {
         builder.where('room_id = ?',req.params.roomId);
+    }).then(sessions => {
+        if (!sessions.length) {
+            return res.json([]);
+        }
+        getPresentations(builder => {
+            builder.where('session_id IN ?', sessions.map(row => row['id']));
+        }).then(presentations => {
+            res.json(sessions.map(session => {
+                session.presentations = presentations.filter(row => row['session_id'] === session['id']);
+                return session;
+            }));
+        });
+    });
+});
+
+app.get('/authors/:hash', (req, res) => {
+
+    const sql = squelPg.select()
+        .field('*')
+        .from('author', 'a')
+        .where('a.author_hash = ?', req.params.hash)
+        .toString();
+
+    query(sql).then(result => {
+        res.json(result.rows[0]);
+    });
+
+});
+
+app.get('/sessionsByAuthorHash/:hash', (req, res) => {
+    getSessions(builder => {
+
+        const subselect = squelPg.select()
+            .field('DISTINCT p.session_id')
+            .from('author', 'a')
+            .join('presentation_to_author', 'pa', 'a.id = pa.author_id')
+            .join('presentation', 'p', 'pa.presentation_id = p.id')
+            .where('a.author_hash = ?', req.params.hash);
+        builder.where('id IN ?', subselect);
+
     }).then(sessions => {
         if (!sessions.length) {
             return res.json([]);
