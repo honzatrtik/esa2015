@@ -47,6 +47,7 @@ const typeNames = {
     'MD': 'Mid-day Specials',
     'SE': 'Special Events',
     'OC': 'Opening Ceremony',
+    'OS': 'Other Sessions',
     'CP': 'Closing Plenary',
     'MA': 'Meetings & Assemblies',
     'EL': 'ESA Lectures'
