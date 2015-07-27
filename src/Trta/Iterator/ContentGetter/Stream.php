@@ -15,11 +15,11 @@ class Stream implements ContentGetterInterface
 
 	protected $context;
 
-	function __construct($url, $context = NULL)
+	function __construct($url)
 	{
 		$this->url = $url;
-		$this->context = $context;
 	}
+
 
 
 	/**
@@ -27,10 +27,18 @@ class Stream implements ContentGetterInterface
 	 */
 	public function getContent()
 	{
-		if (($content = file_get_contents($this->url, NULL, $this->context)) === FALSE)
+		$ch = curl_init();
+
+		curl_setopt($ch, CURLOPT_URL, $this->url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2400);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 2400);
+		$data = curl_exec($ch);
+
+		if(curl_errno($ch))
 		{
-			throw new \RuntimeException(sprintf('Can not get contents of "%s".', $this->url));
+			throw new \RuntimeException(curl_error($ch), curl_errno($ch));
 		}
-		return $content;
+		return $data;
 	}
 } 
