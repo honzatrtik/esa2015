@@ -31,7 +31,7 @@ function handle(res, data) {
 
 function handleError(res, data) {
     let { status, title, html, error } = data;
-    console.warn(error);
+    console.warn(error, error.stack);
     const debug = (process.env.NODE_ENV !== 'production');
     let message = debug && error && error.stack && error.stack.replace(/\n/g, '<br />');
     message = message || 'Internal server error occured. Administrator was notified.';
