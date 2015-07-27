@@ -16,7 +16,8 @@
   "author": "honza.trtik@gmail.com",
   "license": "ISC",
   "engines": {
-    "node": "0.12.2"
+    "node": "0.12.2",
+    "npm": ">=1.1.2"
   },
   "dependencies": {
     "apicache": "0.0.12",
