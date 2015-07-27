@@ -75,7 +75,14 @@ class ImportCommand extends Command
 		$url = $input->getArgument('url') ?: call_user_func($this->urlCreator);
 		$output->write('Using url: ' . $url);
 
-		$it = new SessionExportIterator(new Stream($url), 'session');
+		ini_set('default_socket_timeout', 2400);
+		$context = stream_context_create([
+			'http'=> [
+				'timeout' => 2400
+			]
+		]);
+
+		$it = new SessionExportIterator(new Stream($url, $context), 'session');
 
 		$sessionIds = [];
 		$presentationIds = [];
