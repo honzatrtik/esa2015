@@ -93,7 +93,7 @@ app.get('/types', cache('1 minute'), (req, res) => {
 app.get('/firstChars', cache('1 minute'), (req, res) => {
 
     const sql = squelPg.select()
-        .from('author')
+        .from('v_author')
         .field('DISTINCT upper(first_char)', 'char')
         .order('upper(first_char)')
         .toString();
@@ -106,7 +106,7 @@ app.get('/firstChars', cache('1 minute'), (req, res) => {
 app.get('/authorsByFirstChar/:char', cache('1 minute'), (req, res) => {
 
     const sql = squelPg.select()
-        .from('author')
+        .from('v_author')
         .field('*')
         .where('upper(first_char) = ?', req.params.char.toUpperCase())
         .order('last_name')

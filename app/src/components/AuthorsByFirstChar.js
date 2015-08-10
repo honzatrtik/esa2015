@@ -56,7 +56,7 @@ export default class AuthorsByFirstChar extends React.Component {
 
         const { location, char, authors, loading } = this.props;
         return (
-            <DocumentTitle title={['Authors ', `"${char}"`, ' | ESA 2015 Prague'].join('  ')}>
+            <DocumentTitle title={['Index of Participants ', `"${char}"`, ' | ESA 2015 Prague'].join('  ')}>
                 <div style={{ opacity: loading ? .4 : 1 }}>
 
                     <ul key="links" className="pager">
@@ -64,7 +64,7 @@ export default class AuthorsByFirstChar extends React.Component {
                     </ul>
 
                     <h1 key="title">
-                        Authors "{char}"
+                        Index of Participants "{char}"
                     </h1>
 
                     <div key="rooms">

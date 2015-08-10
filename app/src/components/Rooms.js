@@ -36,11 +36,11 @@ export default class Rooms extends React.Component {
         const { location, rooms, params, loading } = this.props;
 
         return (
-            <DocumentTitle title={['Programme by room', ' | ESA 2015 Prague'].join('  ')}>
+            <DocumentTitle title={['Index of Rooms', ' | ESA 2015 Prague'].join('  ')}>
                 <div style={{ opacity: loading ? .4 : 1 }}>
 
                     <h1 key="title">
-                        Programme by room
+                        Index of Rooms
                     </h1>
 
                     <div key="rooms">

@@ -52,7 +52,7 @@ export default class SessionsByRoomId extends React.Component {
         const { location, sessions, room, params, loading  } = this.props;
 
         return (
-            <DocumentTitle title={['Programme, room ', room.room, ' | ESA 2015 Prague'].join('  ')}>
+            <DocumentTitle title={['Sessions in room  ', room.room, ' | ESA 2015 Prague'].join('  ')}>
                 <div style={{ opacity: loading ? .4 : 1 }}>
 
                     <ul key="links" className="pager">

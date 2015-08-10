@@ -8,10 +8,10 @@ $app = new \Silex\Application();
 
 $app['conftool.passPhrase'] = 'cG9v3N38';
 $app['conftool.baseUrl'] = 'https://www.conftool.pro/esa2015/rest.php';
-$app['conftool.createUrl'] = $app->protect(function($export = 'sessions') use ($app) {
+$app['conftool.createUrl'] = $app->protect(function($export = 'sessions', $query = []) use ($app) {
 	$nonce = time();
 	$pass = $app['conftool.passPhrase'];
-	$query = [
+	$query = array_merge([
 		'nonce' => $nonce,
 		'passhash' => hash('sha256', $nonce . $pass),
 		'page' => 'adminExport',
@@ -19,7 +19,7 @@ $app['conftool.createUrl'] = $app->protect(function($export = 'sessions') use ($
 		'form_export_format' => 'xml',	//allowed: xml_short, csv_comma, csv_semicolon, and xls
 		'cmd_create_export' => true,
 		'form_export_sessions_options' => ['presentations', 'presentations_abstracts', 'all'],
-	];
+	], $query);
 	return $app['conftool.baseUrl'] . '?' . http_build_query($query);
 });
 

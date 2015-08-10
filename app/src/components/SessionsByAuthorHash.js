@@ -51,14 +51,14 @@ export default class SessionsByAuthorHash extends React.Component {
         const { location, sessions, author, params, loading  } = this.props;
 
         return (
-            <DocumentTitle title={['Programme by author ', author.name, ' | ESA 2015 Prague'].join('  ')}>
+            <DocumentTitle title={['Sessions by participant ', author.name, ' | ESA 2015 Prague'].join('  ')}>
                 <div style={{ opacity: loading ? .4 : 1 }}>
 
                     <ul key="links" className="pager">
                         <li className="previous"><Link to="/index">← to author index</Link></li>
                     </ul>
 
-                    <h1>Sessions by author {author.name}</h1>
+                    <h1>Sessions by participant {author.name}</h1>
 
                     <div key="sessions">
                         <div className="row">

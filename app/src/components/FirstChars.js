@@ -36,11 +36,11 @@ export default class FirstChars extends React.Component {
         const { location, firstChars, params, loading } = this.props;
 
         return (
-            <DocumentTitle title={['Author index', ' | ESA 2015 Prague'].join('  ')}>
+            <DocumentTitle title={['Alphabetic index of Participants', ' | ESA 2015 Prague'].join('  ')}>
                 <div style={{ opacity: loading ? .4 : 1 }}>
 
                     <h1 key="title">
-                        Author index
+                        Alphabetic index of Participants
                     </h1>
 
                     <div key="rooms">
