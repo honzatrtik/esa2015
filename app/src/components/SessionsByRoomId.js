@@ -25,7 +25,7 @@ moment.locale('en');
     (state, props) => {
         return {
             sessions: state.sessionsByRoomId.list,
-            room: state.rooms[props.params.roomId]
+            room: state.rooms.filter(r => r['room_id'] == props.params.roomId)[0]
         };
     },
     (state, props) => {
@@ -56,7 +56,7 @@ export default class SessionsByRoomId extends React.Component {
                 <div style={{ opacity: loading ? .4 : 1 }}>
 
                     <ul key="links" className="pager">
-                        <li className="previous"><Link to="/rooms">← back to room list</Link></li>
+                        <li className="previous"><Link to="/rooms">← back to index of rooms</Link></li>
                     </ul>
 
                     <h1>Sessions in room {room.room}</h1>

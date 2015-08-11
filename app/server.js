@@ -53,6 +53,7 @@ function renderPage(html, title, state) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>${title}</title>
+        <link rel="shortcut icon" href="${appUrl}/img/logo-esa.png" type="image/png">
         <link href="${appUrl}/build/styles.css" rel="stylesheet" />
         <link href="${appUrl}/build/print.css" rel="stylesheet" media="print"/>
         </head>
@@ -136,6 +137,7 @@ function start() {
 
 
     app.use('/build', express.static(__dirname + '/build'));
+    app.use('/img', express.static(__dirname + '/img'));
     app.use('/api', api);
     state.extend(app);
 

@@ -129,10 +129,7 @@ app.get('/rooms', cache('1 minute'), (req, res) => {
         .toString();
 
     query(sql).then(result => {
-        res.json(result.rows.reduce((map, row) => {
-            map[row['room_id']] = row;
-            return map;
-        }, {}));
+        res.json(result.rows);
     });
 });
 

@@ -60,11 +60,11 @@ export default class AuthorsByFirstChar extends React.Component {
                 <div style={{ opacity: loading ? .4 : 1 }}>
 
                     <ul key="links" className="pager">
-                        <li className="previous"><Link to="/index">← back to author index</Link></li>
+                        <li className="previous"><Link to="/index">← back to alphabetic index of participants</Link></li>
                     </ul>
 
                     <h1 key="title">
-                        Index of Participants "{char}"
+                        Index of participants "{char}"
                     </h1>
 
                     <div key="rooms">

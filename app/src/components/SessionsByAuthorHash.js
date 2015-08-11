@@ -55,7 +55,7 @@ export default class SessionsByAuthorHash extends React.Component {
                 <div style={{ opacity: loading ? .4 : 1 }}>
 
                     <ul key="links" className="pager">
-                        <li className="previous"><Link to="/index">← to author index</Link></li>
+                        <li className="previous"><Link to="/index">← back to participant index</Link></li>
                     </ul>
 
                     <h1>Sessions by participant {author.name}</h1>

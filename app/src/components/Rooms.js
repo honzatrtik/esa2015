@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import loader from '../createLoaderDecorator.js';
 import { listRoomsAction } from '../actions/actions.js';
 import config from '../config.js';
+import Menu from './Menu';
 import DocumentTitle from 'react-document-title';
 import moment from 'moment';
 moment.locale('en');
@@ -39,13 +40,15 @@ export default class Rooms extends React.Component {
             <DocumentTitle title={['Index of Rooms', ' | ESA 2015 Prague'].join('  ')}>
                 <div style={{ opacity: loading ? .4 : 1 }}>
 
+                    <Menu />
+
                     <h1 key="title">
-                        Index of Rooms
+                        Index of rooms
                     </h1>
 
                     <div key="rooms">
                         <div className="row">
-                            {Object.keys(rooms).map(roomId => <div className="col-md-3" key={roomId}><h4><Link title={'Show programme for room: ' + rooms[roomId].room}  to={`/room/${roomId}`}>{rooms[roomId].room}</Link></h4></div>)}
+                            {Object.keys(rooms).map(index => <div className="col-md-3" key={rooms[index]['room_id']}><h4><Link title={'Show programme for room: ' + rooms[index].room}  to={`/rooms/${rooms[index]['room_id']}`}>{rooms[index].room}</Link></h4></div>)}
                         </div>
                     </div>
                 </div>

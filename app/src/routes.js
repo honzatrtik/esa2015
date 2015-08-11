@@ -27,7 +27,7 @@ export default [
         <Route path="/sessions/:activeDate" component={Sessions}/>
         <Route path="/presentation/:id" component={Presentation}/>
         <Route path="/rooms" component={Rooms}/>
-        <Route path="/room/:roomId" component={SessionsByRoomId}/>
+        <Route path="/rooms/:roomId" component={SessionsByRoomId}/>
         <Route path="/index" component={FirstChars}/>
         <Route path="/index/:char" component={AuthorsByFirstChar}/>
         <Route path="/author/:hash" component={SessionsByAuthorHash}/>

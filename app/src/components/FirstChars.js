@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import loader from '../createLoaderDecorator.js';
 import { listFirstCharsAction } from '../actions/actions.js';
 import config from '../config.js';
+import Menu from './Menu';
 import DocumentTitle from 'react-document-title';
 import moment from 'moment';
 moment.locale('en');
@@ -37,7 +38,10 @@ export default class FirstChars extends React.Component {
 
         return (
             <DocumentTitle title={['Alphabetic index of Participants', ' | ESA 2015 Prague'].join('  ')}>
+
                 <div style={{ opacity: loading ? .4 : 1 }}>
+
+                    <Menu />
 
                     <h1 key="title">
                         Alphabetic index of Participants

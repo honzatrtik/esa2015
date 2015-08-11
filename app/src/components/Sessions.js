@@ -4,6 +4,7 @@ import { getSessions } from '../api.js';
 import DayFilter from './DayFilter.js'
 import TypeFilter from './TypeFilter.js'
 
+import Menu from './Menu';
 import loader from '../createLoaderDecorator.js';
 import { listSessionsByDateAction, listTypesAction } from '../actions/actions.js';
 import config from '../config.js';
@@ -59,6 +60,8 @@ export default class Sessions extends React.Component {
         return (
             <DocumentTitle title={['Programme - ', moment(params.activeDate).format('ddd D. M.'), ' | ESA 2015 Prague'].join('  ')}>
                 <div style={{ opacity: loading ? .4 : 1 }}>
+
+                    <Menu />
 
                     <h1 key="title">
                         Programme by date

@@ -8,9 +8,13 @@ export default class App extends React.Component {
 
         return (
             <div>
-                <Link to="/" id="header">
-                    <h2>ESA 2015 Prague - Conference Programme</h2>
-                </Link>
+
+                <a id="homepage" href="http://esa12thconference.eu/">← ESA 2015 homepage</a>
+                <div id="header">
+                    <Link to="/">
+                        <h2>ESA 2015 Prague - Conference Programme</h2>
+                    </Link>
+                </div>
 
                 <div className="container">
 
