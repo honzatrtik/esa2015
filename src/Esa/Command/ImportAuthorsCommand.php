@@ -54,7 +54,7 @@ class ImportAuthorsCommand extends Command
 
 	protected function makeHash($data)
 	{
-		return sha1(join(',', [intval($data['personID']), $data['email']]));
+		return sha1($data['submitting_author_ID']);
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -63,16 +63,16 @@ class ImportAuthorsCommand extends Command
 		$url = $input->getArgument('url') ?: call_user_func($this->urlCreator);
 		$output->write('Using url: ' . $url);
 
-		$it = new SessionExportIterator(new Stream($url), 'subsumed_author');
+		$it = new SessionExportIterator(new Stream($url), 'paper');
+
+		$authorsCache = [];
 
 		foreach($it as $data)
 		{
 			$hash = $this->makeHash($data);
 
-			$personId = intval($data['personID']);
-			$presentationIds = array_filter(array_map('trim', explode(',', $data['paperIDs'])));
-
-			$this->db->beginTransaction();
+			$personId = intval($data['submitting_author_ID']);
+			$presentationId = $data['paperID'];
 
 			/*
 			if (strpos(strtoupper($data['name']), 'CH') === 0)
@@ -81,27 +81,56 @@ class ImportAuthorsCommand extends Command
 			}
 			*/
 
-			$firstChar = mb_substr($data['name'], 0, 1, 'UTF8');
+			if (!isset($authorsCache[$hash]))
+			{
+				$firstChar = mb_substr($data['sa_name'], 0, 1, 'UTF8');
 
-			$lastName = isset($data['lastname'])
-				? $data['lastname']
-				: trim(explode(',', $data['name'])[0]);
+				$lastName = isset($data['sa_name'])
+					? $data['sa_name']
+					: trim(explode(',', $data['submitting_author'])[0]);
+
+				$authorData = [
+					'person_id' => $personId ?: NULL,
+					'author_hash' => $hash,
+					'first_char' => $firstChar,
+					'first_name' => $data['sa_firstname'] ?: NULL,
+					'last_name' =>  $lastName ?: NULL,
+					'email' => $data['sa_email'],
+					'name' => $data['submitting_author'],
+					'organisation' => join(', ', [$data['sa_organisation'], $data['sa_country']]),
+				];
+
+				$authorsCache[$hash] = [
+					'authorData' => $authorData,
+					'presentationIds' => [$presentationId],
+				];
+
+				$output->writeln(sprintf('Parsed: <info>[%s] %s, %s</info>.', $personId, $authorData['last_name'], $authorData['first_name']));
+
+			}
+			else
+			{
+				$authorsCache[$hash]['presentationIds'][] = $presentationId;
+			}
+
+		}
+
+		$isIn = 0;
+		foreach($authorsCache as $hash => $author)
+		{
+			if (!$isIn)
+			{
+				$this->db->beginTransaction();
+			}
 
 			$this->db->delete('author', ['author_hash' => $hash]);
-			$this->db->insert('author', [
-				'person_id' => $personId ?: NULL,
-				'author_hash' => $hash,
-				'first_char' => $firstChar,
-				'first_name' => $data['firstname'] ?: NULL,
-				'last_name' =>  $lastName ?: NULL,
-				'email' => $data['email'],
-				'name' => $data['name'],
-				'organisation' => $data['organisation'],
-			]);
+			$this->db->insert('author', $author['authorData']);
+
+
 
 			$authorId = $this->db->query('SELECT lastval()')->fetchColumn();
 
-			foreach($presentationIds as $presentationId)
+			foreach($author['presentationIds'] as $presentationId)
 			{
 				$exists = $this->db->fetchColumn('SELECT COUNT(*) FROM presentation WHERE id = ?', [$presentationId]);
 				if ($exists)
@@ -113,8 +142,16 @@ class ImportAuthorsCommand extends Command
 				}
 			}
 
-
-			$this->db->commit();
+			if ($isIn > 100)
+			{
+				$this->db->commit();
+				$isIn = 0;
+				$output->writeln('Commit!');
+			}
+			else
+			{
+				$isIn++;
+			}
 		}
 	}
 }
