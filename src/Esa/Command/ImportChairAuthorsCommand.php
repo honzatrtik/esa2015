@@ -80,8 +80,8 @@ class ImportChairAuthorsCommand extends Command
 				if ($emails)
 				{
 					$authorId = $this->db->fetchColumn('
-						SELECT id FROM v_author WHERE email IN (?)
-					', [$emails], 0, [\Doctrine\DBAL\Connection::PARAM_STR_ARRAY]);
+						SELECT id FROM v_author WHERE "name" IN (?)
+					', [$data['chair1']]);
 					if ($authorId)
 					{
 						$exists = $this->db->fetchColumn('SELECT COUNT(*) FROM presentation WHERE id = ?', [$presentationId]);
@@ -124,8 +124,8 @@ class ImportChairAuthorsCommand extends Command
 				if ($emails)
 				{
 					$authorId = $this->db->fetchColumn('
-						SELECT id FROM v_author WHERE email IN (?)
-					', [$emails], 0, [\Doctrine\DBAL\Connection::PARAM_STR_ARRAY]);
+						SELECT id FROM v_author WHERE "name" IN (?)
+					', [$data['chair2']]);
 					if ($authorId)
 					{
 						$exists = $this->db->fetchColumn('SELECT COUNT(*) FROM presentation WHERE id = ?', [$presentationId]);
