@@ -43,7 +43,7 @@ class ImportChairAuthorsCommand extends Command
 
 	protected function createAuthorData($name, $organisation)
 	{
-		list($firstName, $lastName) = array_map('trim', explode(',', $name));
+		list($lastName, $firstName) = array_map('trim', explode(',', $name));
 		$firstChar = mb_substr($lastName, 0, 1, 'UTF8');
 		$hash = sha1(join(',', [$name, $organisation]));
 		return [
