@@ -153,5 +153,10 @@ class ImportAuthorsCommand extends Command
 				$isIn++;
 			}
 		}
+
+		if ($isIn)
+		{
+			$this->db->commit();
+		}
 	}
 }
