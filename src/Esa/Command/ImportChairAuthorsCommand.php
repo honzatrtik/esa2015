@@ -195,5 +195,9 @@ class ImportChairAuthorsCommand extends Command
 				$isIn++;
 			}
 		}
+		if ($isIn)
+		{
+			$this->db->commit();
+		}
 	}
 }
