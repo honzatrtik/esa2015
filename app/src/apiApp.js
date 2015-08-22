@@ -79,12 +79,7 @@ app.use(cors());
 
 app.get('/types', cache('1 minute'), (req, res) => {
 
-    const sql = squelPg.select()
-        .from('presentation_data', 'd1')
-        .field('DISTINCT d1.indexed', 'type')
-        .where('d1.key = ?', 'contribution_type')
-        .toString();
-
+    const sql = "SELECT DISTINCT d1.indexed AS type, x.ordering FROM presentation_data AS d1 LEFT JOIN (VALUES ('OC',1), ('CP',2), ('SPS',3), ('MD',4), ('MA', 5), ('OS', 6)) as x(name, ordering) ON (x.name = d1.indexed) WHERE d1.key =  'contribution_type' ORDER BY x.ordering, d1.indexed";
     query(sql).then(result => {
         res.json(result.rows.map(row => row.type));
     });
