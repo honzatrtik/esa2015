@@ -5,6 +5,7 @@ import { listAuthorsByFirstCharAction, listFirstCharsAction } from '../actions/a
 import config from '../config.js';
 import DocumentTitle from 'react-document-title';
 import moment from 'moment';
+import Promise from '../Promise.js';
 moment.locale('en');
 
 
